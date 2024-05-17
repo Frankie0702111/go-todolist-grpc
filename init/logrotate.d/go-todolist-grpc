@@ -1,0 +1,10 @@
+/app/log/*.log
+{
+    copytruncate
+    daily
+    dateext
+    missingok
+    notifempty
+    rotate 30
+    nocompress
+}
