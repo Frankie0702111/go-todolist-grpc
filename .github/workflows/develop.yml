@@ -1,0 +1,23 @@
+name: Deploy to master
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  depeloy:
+    name: Deploy to todolist-gRPC service
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Get custom info
+      id: custome-var
+      run: |
+        git fetch --prune --unshallow --tags
+        echo "short-sha=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
+        echo "tag-name=$(git describe --tags `git rev-list --tags --max-count=1` | cut -c 2-)" >> $GITHUB_OUTPUT
+        echo "build-time=$(TZ=Asia/Taipei date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_OUTPUT
+        echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT

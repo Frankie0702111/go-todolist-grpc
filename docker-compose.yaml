@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  server:
+    container_name: go-todolist-grpc
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - target: 7531
+        published: ${SERVER_PORT:-7531}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    networks:
+      - todolist_grpc_network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.7-alpine3.19
+    container_name: grpc-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-root}
+      POSTGRES_PASSWORD: ${DB_PASS:-root}
+      POSTGRES_DB: ${DB_NAME:-go-todolist-grpc-db}
+    ports:
+      - target: 5432
+        published: ${DB_PORT:-5432}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: volume
+        source: db_postgres
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    networks:
+      - todolist_grpc_network
+
+networks:
+  todolist_grpc_network:
+    driver: bridge
+
+volumes:
+  db_postgres:
