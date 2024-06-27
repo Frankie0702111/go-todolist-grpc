@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "user.proto";
+import "public.proto";
+
+option go_package = "go-todolist-grpc/api/pb";
+
+service ToDoList {
+    rpc Login (LoginRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/user/login"
+            body: "*"
+        };
+    }
+    rpc RegisterUser (RegisterUserRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/user/register"
+            body: "*"
+        };
+    }
+    rpc UpdateUser (UpdateUserRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/user/update"
+            body: "*"
+        };
+    }
+}
