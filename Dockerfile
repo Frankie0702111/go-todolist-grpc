@@ -1,4 +1,4 @@
-FROM golang:1.19.13-alpine3.18 AS builder
+FROM golang:1.22.4-alpine3.20 AS builder
 ARG COMMIT_HASH=""
 ARG BUILD_VERSION=""
 ARG BUILD_TIME=""

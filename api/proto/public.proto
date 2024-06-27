@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb;
+
+import "model.proto";
+
+option go_package = "go-todolist-grpc/api/pb";
+
+message Response {
+    oneof data {
+        User user = 1;
+    };
+    int32 status = 2;
+    string message = 3;
+}
