@@ -9,24 +9,22 @@ import (
 )
 
 const (
-	tableName string = "users"
+	tableNameUser string = "users"
 )
 
 type User struct {
-	ID           int       `json:"id"`
-	Username     string    `json:"username"`
-	Email        string    `json:"email"`
-	Password     string    `json:"-"`
-	Status       bool      `json:"-"`
-	CreatedAt    time.Time `json:"-"`
-	CreatedAtStr string    `json:"created_at" gorm:"-"`
-	UpdatedAt    time.Time `json:"-"`
-	UpdatedAtStr string    `json:"updated_at" gorm:"-"`
-	Token        string    `json:"token,omitempty" gorm:"-"`
+	ID        int       `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	Password  string    `json:"-"`
+	Status    bool      `json:"-"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
+	Token     string    `json:"token,omitempty" gorm:"-"`
 }
 
 func (u User) TableName() string {
-	return tableName
+	return tableNameUser
 }
 
 type UserFieldValues struct {
@@ -40,7 +38,7 @@ type UserFieldValues struct {
 }
 
 func (val UserFieldValues) TableName() string {
-	return tableName
+	return tableNameUser
 }
 
 type UserConditions struct {
@@ -49,7 +47,7 @@ type UserConditions struct {
 }
 
 func (val UserConditions) TableName() string {
-	return tableName
+	return tableNameUser
 }
 
 func CreateUser(conn DBExecutable, values *UserFieldValues) (*UserFieldValues, error) {
@@ -87,10 +85,10 @@ func GetUserByEmail(conn *sql.DB, email string) *User {
 	return getUser(conn, cons)
 }
 
-func GetUserByID(conn DBExecutable, id *int) *User {
+func GetUserByID(conn DBExecutable, id int) *User {
 	cons := &UserConditions{
 		ID: &condition.Int{
-			EQ: id,
+			EQ: &id,
 		},
 	}
 
@@ -116,6 +114,6 @@ func GetUserCount(conn *sql.DB, cons *UserConditions) (int, error) {
 	return int(count), nil
 }
 
-func UpdateUser(conn DBExecutable, id int, values *UserFieldValues) error {
+func UpdateUser(conn *sql.Tx, id int, values *UserFieldValues) error {
 	return db.GormDriver(conn).Where(User{ID: id}).Updates(values).Error
 }

@@ -43,16 +43,16 @@ go-test:
 	make migrate-test-up; \
 	$(DOCKER) go test -v internal/config/config_test.go -json > ./target/log/config_test$(YMD).log; \
 	$(DOCKER) go test -v internal/pkg/db/db_test.go -json > ./target/log/db_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/hash/hash_test.go -json > ./target/log/hash_test$(YMD).log; \
+	$(DOCKER) go test -v internal/pkg/util/hash_test.go -json > ./target/log/hash_test$(YMD).log; \
 	$(DOCKER) go test -v internal/pkg/util/jwt_test.go -json > ./target/log/jwt_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/util/random_test.go -json > ./target/log/th_test$(YMD).log; \
+	$(DOCKER) go test -v internal/pkg/util/random_test.go -json > ./target/log/random_test$(YMD).log; \
 	$(DOCKER) go test -v internal/pkg/util/th_test.go -json > ./target/log/th_test$(YMD).log; \
-	$(DOCKER) go test -v internal/model/mod_user_test.go -json > ./target/log/th_test$(YMD).log; \
-	$(DOCKER) go test -v internal/service/s_user_test.go -json > ./target/log/th_test$(YMD).log; \
+	$(DOCKER) go test -v internal/model/mod_user_test.go -json > ./target/log/mod_user_test$(YMD).log; \
+	$(DOCKER) go test -v internal/service/s_user_test.go -json > ./target/log/s_user_test$(YMD).log; \
 	make migrate-test-down; \
 	make clean-logs;
 
 go-test-single:
-	$(DOCKER) go test -v internal/pkg/util/random_test.go;
+	$(DOCKER) go test -v internal/model/mod_user_test.go;
 
 .PHONY: proto grpcui migrate-create migrate-test-up migrate-test-down clean-logs go-test go-test-single
