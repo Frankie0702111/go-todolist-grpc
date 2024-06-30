@@ -6,7 +6,6 @@ import (
 	"go-todolist-grpc/internal/config"
 	"go-todolist-grpc/internal/model"
 	"go-todolist-grpc/internal/pkg/db"
-	"go-todolist-grpc/internal/pkg/hash"
 	"go-todolist-grpc/internal/pkg/log"
 	"go-todolist-grpc/internal/pkg/util"
 	"net/http"
@@ -38,20 +37,20 @@ func (s *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) 
 	cnf := config.Get()
 	conn := db.GetConn()
 
-	// Check if the email is already registered
-	getUser := model.GetUserByEmail(conn, req.Email)
-	if getUser != nil {
-		return nil, status.Errorf(codes.AlreadyExists, "the email already exists")
-	}
-
 	// Validate request
 	reqRegister := &ReqRegister{}
 	if err := bindRequest(req, reqRegister); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "failed to validate: %v", err.Error())
 	}
 
+	// Check if the email is already registered
+	getUser := model.GetUserByEmail(conn, reqRegister.Email)
+	if getUser != nil {
+		return nil, status.Errorf(codes.AlreadyExists, "the email already exists")
+	}
+
 	// Hash password
-	hashPassword, hashPasswordErr := hash.HashPassword(cnf.BcryptCost, reqRegister.Password)
+	hashPassword, hashPasswordErr := util.HashPassword(cnf.BcryptCost, reqRegister.Password)
 	if hashPasswordErr != nil {
 		return nil, status.Errorf(codes.Internal, "failed to hash password: %v", hashPasswordErr)
 	}
@@ -67,9 +66,9 @@ func (s *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) 
 	insFields := reqRegister.toFieldValues()
 	user, userErr := model.CreateUser(tx, &insFields)
 	if userErr != nil {
-		if userErr.Error() == "email already exists" {
-			return nil, status.Errorf(codes.AlreadyExists, "email already exists")
-		}
+		// if userErr.Error() == "email already exists" {
+		// 	return nil, status.Errorf(codes.AlreadyExists, "email already exists")
+		// }
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", userErr)
 	}
 
@@ -105,20 +104,20 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 	cnf := config.Get()
 	conn := db.GetConn()
 
-	// Check if this email is unregistered
-	getUser := model.GetUserByEmail(conn, req.Email)
-	if getUser == nil {
-		return nil, status.Errorf(codes.NotFound, "this email is unregistered")
-	}
-
 	// Validate request
 	reqLogin := &ReqLogin{}
 	if err := bindRequest(req, reqLogin); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "failed to validate: %v", err.Error())
 	}
 
+	// Check if this email is unregistered
+	getUser := model.GetUserByEmail(conn, reqLogin.Email)
+	if getUser == nil {
+		return nil, status.Errorf(codes.NotFound, "this email is unregistered")
+	}
+
 	// Check user password
-	if checkPassword := hash.CheckPasswordHash(req.Password, getUser.Password); !checkPassword {
+	if checkPassword := util.CheckPasswordHash(reqLogin.Password, getUser.Password); !checkPassword {
 		return nil, status.Errorf(codes.InvalidArgument, "password is incorrect")
 	}
 
@@ -145,13 +144,13 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 	}, nil
 }
 
-type ReqUpdate struct {
+type ReqUpdateUser struct {
 	UserId   int64   `json:"user_id" validate:"required"`
 	Username *string `json:"username" validate:"omitempty,min=3,max=32"`
 	Password *string `json:"password" validate:"omitempty,min=8"`
 }
 
-func (ins ReqUpdate) toFieldValues() (model.UserFieldValues, bool) {
+func (ins ReqUpdateUser) toFieldValues() (model.UserFieldValues, bool) {
 	requiredCheck := false
 	fv := model.UserFieldValues{}
 	fv.ID = model.GiveColInt(int(ins.UserId))
@@ -173,21 +172,21 @@ func (s *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb
 	cnf := config.Get()
 	conn := db.GetConn()
 
-	// Check if the user ID not found
-	userId := int(req.UserId)
-	if getUser := model.GetUserByID(conn, &userId); getUser == nil {
-		return nil, status.Errorf(codes.NotFound, "user ID not found")
-	}
-
 	// Validate request
-	reqUpdate := &ReqUpdate{}
+	reqUpdate := &ReqUpdateUser{}
 	if err := bindRequest(req, reqUpdate); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "failed to validate: %v", err.Error())
 	}
 
+	// Check if the user ID not found
+	userId := int(reqUpdate.UserId)
+	if getUser := model.GetUserByID(conn, userId); getUser == nil {
+		return nil, status.Errorf(codes.NotFound, "user ID not found")
+	}
+
 	// Hash password
 	if reqUpdate.Password != nil {
-		hashPassword, hashPasswordErr := hash.HashPassword(cnf.BcryptCost, *reqUpdate.Password)
+		hashPassword, hashPasswordErr := util.HashPassword(cnf.BcryptCost, *reqUpdate.Password)
 		if hashPasswordErr != nil {
 			return nil, status.Errorf(codes.Internal, "failed to hash password: %v", hashPasswordErr)
 		}
@@ -207,7 +206,7 @@ func (s *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb
 			return nil, status.Errorf(codes.Internal, "failed to update user: %v", err)
 		}
 
-		getUser := model.GetUserByID(tx, &userId)
+		getUser := model.GetUserByID(tx, userId)
 		if getUser == nil {
 			return nil, status.Errorf(codes.NotFound, "user ID not found")
 		}
