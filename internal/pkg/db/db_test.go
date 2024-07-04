@@ -1,7 +1,6 @@
 package db_test
 
 import (
-	"fmt"
 	"go-todolist-grpc/internal/config"
 	mydb "go-todolist-grpc/internal/pkg/db"
 	"go-todolist-grpc/internal/pkg/log"
@@ -99,7 +98,6 @@ func TestInitSuccess(t *testing.T) {
 		}
 
 		err = mydb.Init(opt)
-		fmt.Printf("error: %v\n", err)
 		assert.Error(t, err, "dial tcp: lookup tcp/invalidport: unknown port")
 	})
 

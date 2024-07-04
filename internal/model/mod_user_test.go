@@ -13,10 +13,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var sqlDB *sql.DB
-var sqlTx *sql.Tx
+var sqlDBUser *sql.DB
+var sqlTxUser *sql.Tx
 
-func setUp() {
+func setUpModUser() {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s application_name=otter sslmode=disable timezone=UTC",
 		config.SourceHost,
 		config.SourcePort,
@@ -35,12 +35,12 @@ func setUp() {
 		panic(txErr)
 	}
 
-	sqlDB = db
-	sqlTx = tx
+	sqlDBUser = db
+	sqlTxUser = tx
 }
 
-func setDown() {
-	sqlDB.Close()
+func setDownModUser() {
+	sqlDBUser.Close()
 }
 
 func createTestUser(email, username, password string) (*model.UserFieldValues, error) {
@@ -59,22 +59,19 @@ func createTestUser(email, username, password string) (*model.UserFieldValues, e
 		UpdatedAt: model.GiveColTime(now),
 	}
 
-	return model.CreateUser(sqlDB, userValues)
+	return model.CreateUser(sqlDBUser, userValues)
 }
 
 func TestCreateUser(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		setUp()
-		defer setDown()
+	setUpModUser()
+	defer setDownModUser()
 
+	t.Run("Success", func(t *testing.T) {
 		_, err := createTestUser(util.RandomEmail(), util.RandomString(6), util.RandomString(8))
 		assert.Nil(t, err)
 	})
 
 	t.Run("Failure_DuplicateEmail", func(t *testing.T) {
-		setUp()
-		defer setDown()
-
 		// Insert a test user
 		email := util.RandomEmail()
 		password := util.RandomString(8)
@@ -91,84 +88,78 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUserByEmail(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		setUp()
-		defer setDown()
+	setUpModUser()
+	defer setDownModUser()
 
+	t.Run("Success", func(t *testing.T) {
 		// Insert a test user
 		email := util.RandomEmail()
 		_, err := createTestUser(email, util.RandomString(6), util.RandomString(8))
 		assert.Nil(t, err)
 
 		// Test fetching the user by email
-		user := model.GetUserByEmail(sqlDB, email)
+		user := model.GetUserByEmail(sqlDBUser, email)
 		assert.NotNil(t, user)
 		assert.Equal(t, email, user.Email)
 	})
 
-	t.Run("Failure", func(t *testing.T) {
-		setUp()
-		defer setDown()
-
+	t.Run("Failure_Non-ExistentEmail", func(t *testing.T) {
 		// Test fetching a non-existent user
-		user := model.GetUserByEmail(sqlDB, "nonexistent@example.com")
+		user := model.GetUserByEmail(sqlDBUser, "nonexistent@example.com")
 		assert.Nil(t, user)
 	})
 }
 
 func TestGetUserByID(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		setUp()
-		defer setDown()
+	setUpModUser()
+	defer setDownModUser()
 
+	t.Run("Success", func(t *testing.T) {
 		// Insert a test user
 		email := util.RandomEmail()
 		createdUser, err := createTestUser(email, util.RandomString(6), util.RandomString(8))
 		assert.Nil(t, err)
 
 		// Test fetching the user by ID
-		user := model.GetUserByID(sqlDB, createdUser.ID.Val)
+		user := model.GetUserByID(sqlDBUser, createdUser.ID.Val)
 		assert.NotNil(t, user)
 		assert.Equal(t, createdUser.ID.Val, user.ID)
 	})
 
-	t.Run("Failure", func(t *testing.T) {
-		setUp()
-		defer setDown()
-
+	t.Run("Failure_Non-ExistentID", func(t *testing.T) {
 		// Test fetching a non-existent user
 		id := 999999
-		user := model.GetUserByID(sqlDB, id)
+		user := model.GetUserByID(sqlDBUser, id)
 		assert.Nil(t, user)
 	})
 }
 
 func TestGetUserCount(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		setUp()
-		defer setDown()
+	setUpModUser()
+	defer setDownModUser()
 
+	t.Run("Success", func(t *testing.T) {
 		// Count users before inserting a new user
-		initialCount, err := model.GetUserCount(sqlDB, &model.UserConditions{})
+		initialCount, err := model.GetUserCount(sqlDBUser, &model.UserConditions{})
 		assert.Nil(t, err)
 
 		// Insert a test user
 		email := util.RandomEmail()
-		_, err = createTestUser(email, util.RandomString(6), util.RandomString(8))
-		assert.Nil(t, err)
+		_, createUserErr := createTestUser(email, util.RandomString(6), util.RandomString(8))
+		assert.Nil(t, createUserErr)
 
 		// Count users after inserting a new user
-		newCount, err := model.GetUserCount(sqlDB, &model.UserConditions{})
+		newCount, err := model.GetUserCount(sqlDBUser, &model.UserConditions{})
 		assert.Nil(t, err)
 		assert.Equal(t, initialCount+1, newCount)
 	})
 }
 
 func TestUpdateUser(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		setUp()
-		defer setDown()
+	setUpModUser()
+	defer setDownModUser()
 
+	t.Run("Success", func(t *testing.T) {
 		// Insert a test user
 		email := util.RandomEmail()
 		createdUser, err := createTestUser(email, util.RandomString(6), util.RandomString(8))
@@ -176,26 +167,22 @@ func TestUpdateUser(t *testing.T) {
 
 		// Update the user's email
 		newUsername := util.RandomString(6)
-		err = model.UpdateUser(sqlTx, createdUser.ID.Val, &model.UserFieldValues{
+		updateUserErr := model.UpdateUser(sqlTxUser, createdUser.ID.Val, &model.UserFieldValues{
 			Username: model.GiveColString(newUsername),
 		})
-		assert.Nil(t, err)
+		assert.Nil(t, updateUserErr)
 
 		// Verify the update
-		updatedUser := model.GetUserByID(sqlTx, createdUser.ID.Val)
-		assert.NotNil(t, updatedUser)
-		assert.Equal(t, newUsername, updatedUser.Username)
+		getdUser := model.GetUserByID(sqlTxUser, createdUser.ID.Val)
+		assert.NotNil(t, getdUser)
+		assert.Equal(t, newUsername, getdUser.Username)
 	})
 
-	t.Run("Failure", func(t *testing.T) {
-		setUp()
-		defer setDown()
-
+	t.Run("Failure_Non-ExistentID", func(t *testing.T) {
 		// Attempt to update a non-existent user
-		err := model.UpdateUser(sqlTx, 999999, &model.UserFieldValues{
+		err := model.UpdateUser(sqlTxUser, 999999, &model.UserFieldValues{
 			Username: model.GiveColString(util.RandomString(6)),
 		})
-		fmt.Printf("error: %v\n", err)
 		assert.Nil(t, err)
 	})
 }

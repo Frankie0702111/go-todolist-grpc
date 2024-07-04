@@ -20,7 +20,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func setUp() error {
+func setUpUser() error {
 	var mockConfigContent bytes.Buffer
 	mockConfigContent.WriteString("HTTP_SERVER_PORT=" + config.HttpPort + "\n")
 	mockConfigContent.WriteString("GRPC_SERVER_PORT=" + config.GrpcPort + "\n")
@@ -76,11 +76,11 @@ func setUp() error {
 }
 
 func TestRegisterUser(t *testing.T) {
-	err := setUp()
+	err := setUpUser()
 	assert.NoError(t, err)
 
-	email := util.RandomEmail()
 	s := service.Server{}
+	email := util.RandomEmail()
 
 	t.Run("Success", func(t *testing.T) {
 		req := &pb.RegisterUserRequest{
@@ -167,7 +167,7 @@ func TestRegisterUser(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	err := setUp()
+	err := setUpUser()
 	assert.NoError(t, err)
 
 	// Insert a test user
@@ -231,7 +231,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	err := setUp()
+	err := setUpUser()
 	assert.NoError(t, err)
 
 	// Insert a test user
@@ -246,29 +246,30 @@ func TestUpdateUser(t *testing.T) {
 	assert.Nil(t, err)
 
 	t.Run("Success", func(t *testing.T) {
-		uUsername := util.RandomString(6)
-		uPassword := util.RandomString(8)
-		uReq := &pb.UpdateUserRequest{
+		newUsername := util.RandomString(6)
+		newPassword := util.RandomString(8)
+		req := &pb.UpdateUserRequest{
 			UserId:   rRes.GetUser().Id,
-			Username: &uUsername,
-			Password: &uPassword,
+			Username: &newUsername,
+			Password: &newPassword,
 		}
 
-		uRes, err := s.UpdateUser(context.Background(), uReq)
+		res, err := s.UpdateUser(context.Background(), req)
 		assert.Nil(t, err)
-		assert.NotNil(t, uRes)
-		assert.Equal(t, int32(http.StatusOK), uRes.Status)
-		assert.Equal(t, "ok", uRes.Message)
-		assert.NotEmpty(t, uRes.GetUser().Email)
+		assert.NotNil(t, res)
+		assert.Equal(t, int32(http.StatusOK), res.Status)
+		assert.Equal(t, "ok", res.Message)
+		assert.Equal(t, newUsername, res.GetUser().Username)
+		assert.NotEmpty(t, res.GetUser().Email)
 	})
 
 	t.Run("Failure_InvalidUserID", func(t *testing.T) {
-		uUsername := util.RandomString(6)
-		uPassword := util.RandomString(8)
+		newUsername := util.RandomString(6)
+		newPassword := util.RandomString(8)
 		req := &pb.UpdateUserRequest{
 			UserId:   999999,
-			Username: &uUsername,
-			Password: &uPassword,
+			Username: &newUsername,
+			Password: &newPassword,
 		}
 
 		res, err := s.UpdateUser(context.Background(), req)
@@ -282,12 +283,12 @@ func TestUpdateUser(t *testing.T) {
 	})
 
 	t.Run("Failure_EmptyUsername", func(t *testing.T) {
-		uUsername := ""
-		uPassword := util.RandomString(8)
+		newUsername := ""
+		newPassword := util.RandomString(8)
 		req := &pb.UpdateUserRequest{
 			UserId:   rRes.GetUser().Id,
-			Username: &uUsername,
-			Password: &uPassword,
+			Username: &newUsername,
+			Password: &newPassword,
 		}
 
 		res, err := s.UpdateUser(context.Background(), req)
