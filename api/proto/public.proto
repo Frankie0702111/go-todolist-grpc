@@ -9,7 +9,23 @@ option go_package = "go-todolist-grpc/api/pb";
 message Response {
     oneof data {
         User user = 1;
+        Category category = 2;
     };
-    int32 status = 2;
-    string message = 3;
+    int32 status = 3;
+    string message = 4;
+}
+
+message ListResponse {
+    oneof data {
+        Categories categories = 1;
+    }
+    int64 total_count = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+    int32 status = 5;
+    string message = 6;
+}
+
+message Categories {
+    repeated Category data = 1;
 }

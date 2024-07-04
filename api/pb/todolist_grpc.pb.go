@@ -19,9 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	ToDoList_Login_FullMethodName        = "/pb.ToDoList/Login"
-	ToDoList_RegisterUser_FullMethodName = "/pb.ToDoList/RegisterUser"
-	ToDoList_UpdateUser_FullMethodName   = "/pb.ToDoList/UpdateUser"
+	ToDoList_Login_FullMethodName          = "/pb.ToDoList/Login"
+	ToDoList_RegisterUser_FullMethodName   = "/pb.ToDoList/RegisterUser"
+	ToDoList_UpdateUser_FullMethodName     = "/pb.ToDoList/UpdateUser"
+	ToDoList_CreateCategory_FullMethodName = "/pb.ToDoList/CreateCategory"
+	ToDoList_GetCategory_FullMethodName    = "/pb.ToDoList/GetCategory"
+	ToDoList_ListCategory_FullMethodName   = "/pb.ToDoList/ListCategory"
+	ToDoList_UpdateCategory_FullMethodName = "/pb.ToDoList/UpdateCategory"
+	ToDoList_DeleteCategory_FullMethodName = "/pb.ToDoList/DeleteCategory"
 )
 
 // ToDoListClient is the client API for ToDoList service.
@@ -31,6 +36,11 @@ type ToDoListClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*Response, error)
 	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*Response, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Response, error)
+	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*Response, error)
+	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*Response, error)
+	ListCategory(ctx context.Context, in *ListCategoryRequest, opts ...grpc.CallOption) (*ListResponse, error)
+	UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*Response, error)
+	DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type toDoListClient struct {
@@ -71,6 +81,56 @@ func (c *toDoListClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, 
 	return out, nil
 }
 
+func (c *toDoListClient) CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ToDoList_CreateCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toDoListClient) GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ToDoList_GetCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toDoListClient) ListCategory(ctx context.Context, in *ListCategoryRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListResponse)
+	err := c.cc.Invoke(ctx, ToDoList_ListCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toDoListClient) UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ToDoList_UpdateCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toDoListClient) DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ToDoList_DeleteCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ToDoListServer is the server API for ToDoList service.
 // All implementations must embed UnimplementedToDoListServer
 // for forward compatibility
@@ -78,6 +138,11 @@ type ToDoListServer interface {
 	Login(context.Context, *LoginRequest) (*Response, error)
 	RegisterUser(context.Context, *RegisterUserRequest) (*Response, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*Response, error)
+	CreateCategory(context.Context, *CreateCategoryRequest) (*Response, error)
+	GetCategory(context.Context, *GetCategoryRequest) (*Response, error)
+	ListCategory(context.Context, *ListCategoryRequest) (*ListResponse, error)
+	UpdateCategory(context.Context, *UpdateCategoryRequest) (*Response, error)
+	DeleteCategory(context.Context, *DeleteCategoryRequest) (*Response, error)
 	mustEmbedUnimplementedToDoListServer()
 }
 
@@ -93,6 +158,21 @@ func (UnimplementedToDoListServer) RegisterUser(context.Context, *RegisterUserRe
 }
 func (UnimplementedToDoListServer) UpdateUser(context.Context, *UpdateUserRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedToDoListServer) CreateCategory(context.Context, *CreateCategoryRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCategory not implemented")
+}
+func (UnimplementedToDoListServer) GetCategory(context.Context, *GetCategoryRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCategory not implemented")
+}
+func (UnimplementedToDoListServer) ListCategory(context.Context, *ListCategoryRequest) (*ListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCategory not implemented")
+}
+func (UnimplementedToDoListServer) UpdateCategory(context.Context, *UpdateCategoryRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCategory not implemented")
+}
+func (UnimplementedToDoListServer) DeleteCategory(context.Context, *DeleteCategoryRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCategory not implemented")
 }
 func (UnimplementedToDoListServer) mustEmbedUnimplementedToDoListServer() {}
 
@@ -161,6 +241,96 @@ func _ToDoList_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ToDoList_CreateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoListServer).CreateCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToDoList_CreateCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoListServer).CreateCategory(ctx, req.(*CreateCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToDoList_GetCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoListServer).GetCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToDoList_GetCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoListServer).GetCategory(ctx, req.(*GetCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToDoList_ListCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoListServer).ListCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToDoList_ListCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoListServer).ListCategory(ctx, req.(*ListCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToDoList_UpdateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoListServer).UpdateCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToDoList_UpdateCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoListServer).UpdateCategory(ctx, req.(*UpdateCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToDoList_DeleteCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoListServer).DeleteCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToDoList_DeleteCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoListServer).DeleteCategory(ctx, req.(*DeleteCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ToDoList_ServiceDesc is the grpc.ServiceDesc for ToDoList service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -179,6 +349,26 @@ var ToDoList_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUser",
 			Handler:    _ToDoList_UpdateUser_Handler,
+		},
+		{
+			MethodName: "CreateCategory",
+			Handler:    _ToDoList_CreateCategory_Handler,
+		},
+		{
+			MethodName: "GetCategory",
+			Handler:    _ToDoList_GetCategory_Handler,
+		},
+		{
+			MethodName: "ListCategory",
+			Handler:    _ToDoList_ListCategory_Handler,
+		},
+		{
+			MethodName: "UpdateCategory",
+			Handler:    _ToDoList_UpdateCategory_Handler,
+		},
+		{
+			MethodName: "DeleteCategory",
+			Handler:    _ToDoList_DeleteCategory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

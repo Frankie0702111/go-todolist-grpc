@@ -95,12 +95,10 @@ func GetUserByID(conn DBExecutable, id int) *User {
 	return getUser(conn, cons)
 }
 
-func GetUserCount(conn *sql.DB, cons *UserConditions) (int, error) {
+func GetUserCount(conn *sql.DB, cons *UserConditions) (int64, error) {
 	var count int64
 
-	gormConn := db.GormDriver(conn)
-
-	stmt := gormConn.Model(User{})
+	stmt := db.GormDriver(conn).Model(User{})
 
 	where := BuildWhereClause(cons)
 	if len(where.Exprs) > 0 {
@@ -111,7 +109,7 @@ func GetUserCount(conn *sql.DB, cons *UserConditions) (int, error) {
 		return 0, err
 	}
 
-	return int(count), nil
+	return count, nil
 }
 
 func UpdateUser(conn *sql.Tx, id int, values *UserFieldValues) error {
