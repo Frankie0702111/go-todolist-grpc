@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"errors"
-	"fmt"
 	"go-todolist-grpc/internal/config"
 	"go-todolist-grpc/internal/pkg/log"
 	"go-todolist-grpc/internal/pkg/util"
@@ -15,7 +14,12 @@ import (
 
 // List of methods that require authentication
 var authRequiredMethods = map[string]bool{
-	"/pb.ToDoList/UpdateUser": true,
+	"/pb.ToDoList/UpdateUser":     true,
+	"/pb.ToDoList/CreateCategory": true,
+	"/pb.ToDoList/GetCategory":    true,
+	"/pb.ToDoList/ListCategory":   true,
+	"/pb.ToDoList/UpdateCategory": true,
+	"/pb.ToDoList/DeleteCategory": true,
 }
 
 func Verify(cnf *config.Config) grpc.UnaryServerInterceptor {
@@ -41,7 +45,7 @@ func Verify(cnf *config.Config) grpc.UnaryServerInterceptor {
 
 		// Validate token
 		claims, err := util.ParseToken(cnf.JwtSecretKey, token)
-		fmt.Printf("claims = %v\n", claims)
+		log.Info.Printf("claims = %v\n", claims)
 		if err != nil {
 			log.Error.Printf("invalid token: %v", err)
 			return nil, errors.New("invalid token")

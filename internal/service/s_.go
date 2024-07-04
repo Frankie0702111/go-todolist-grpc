@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-todolist-grpc/api/pb"
 	"reflect"
+	"strings"
 
 	"github.com/go-playground/validator"
 )
@@ -69,4 +70,32 @@ func bindRequest(req interface{}, reqStruct interface{}) error {
 	}
 
 	return nil
+}
+
+func ParseSortBy(str string) map[string]bool {
+	rtn := map[string]bool{}
+	if len(str) == 0 {
+		return rtn
+	}
+
+	arr := strings.Split(str, ",")
+	for _, v := range arr {
+		if len(v) == 0 {
+			continue
+		}
+		switch v[:1] {
+		case "+":
+			rtn[v[1:]] = true
+		case "-":
+			rtn[v[1:]] = false
+		default:
+			rtn[v] = true
+		}
+	}
+
+	return rtn
+}
+
+type ReqId struct {
+	Id int64 `json:"id" validate:"required,min=1"`
 }
