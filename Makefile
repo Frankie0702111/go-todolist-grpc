@@ -49,10 +49,12 @@ go-test:
 	$(DOCKER) go test -v internal/pkg/util/th_test.go -json > ./target/log/th_test$(YMD).log; \
 	$(DOCKER) go test -v internal/model/mod_user_test.go -json > ./target/log/mod_user_test$(YMD).log; \
 	$(DOCKER) go test -v internal/service/s_user_test.go -json > ./target/log/s_user_test$(YMD).log; \
+	$(DOCKER) go test -v internal/model/mod_category_test.go -json > ./target/log/mod_category_test$(YMD).log; \
+	$(DOCKER) go test -v internal/service/s_category_test.go -json > ./target/log/s_category_test$(YMD).log; \
 	make migrate-test-down; \
 	make clean-logs;
 
 go-test-single:
-	$(DOCKER) go test -v internal/model/mod_user_test.go;
+	$(DOCKER) go test -v internal/service/s_category_test.go;
 
 .PHONY: proto grpcui migrate-create migrate-test-up migrate-test-down clean-logs go-test go-test-single
