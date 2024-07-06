@@ -95,7 +95,7 @@ func GetUserByID(conn DBExecutable, id int) *User {
 	return getUser(conn, cons)
 }
 
-func GetUserCount(conn *sql.DB, cons *UserConditions) (int64, error) {
+func GetUserCount(conn *sql.DB, cons *UserConditions) (int32, error) {
 	var count int64
 
 	stmt := db.GormDriver(conn).Model(User{})
@@ -109,7 +109,7 @@ func GetUserCount(conn *sql.DB, cons *UserConditions) (int64, error) {
 		return 0, err
 	}
 
-	return count, nil
+	return int32(count), nil
 }
 
 func UpdateUser(conn *sql.Tx, id int, values *UserFieldValues) error {

@@ -8,11 +8,11 @@ import (
 )
 
 type CustomClaims struct {
-	UserID int64 `json:"user_id"`
+	UserID int `json:"user_id"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(jwtTTL int, jwtSecretKey string, userID int64) (string, error) {
+func GenerateToken(jwtTTL int, jwtSecretKey string, userID int) (string, error) {
 	now := time.Now()
 	ttl := time.Minute * time.Duration(jwtTTL)
 

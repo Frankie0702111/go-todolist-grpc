@@ -13,7 +13,7 @@ func TestGenerateToken(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		jwtTTL := 15
 		jwtSecretKey := "mysecretkey"
-		userID := int64(123)
+		userID := int(123)
 
 		token, err := util.GenerateToken(jwtTTL, jwtSecretKey, userID)
 		assert.NoError(t, err)
@@ -31,7 +31,7 @@ func TestParseToken(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		jwtTTL := 15
 		jwtSecretKey := "mysecretkey"
-		userID := int64(123)
+		userID := int(123)
 
 		token, err := util.GenerateToken(jwtTTL, jwtSecretKey, userID)
 		assert.NoError(t, err)

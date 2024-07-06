@@ -10,6 +10,7 @@ import "public.proto";
 option go_package = "go-todolist-grpc/api/pb";
 
 service ToDoList {
+    // User
     rpc Login (LoginRequest) returns (Response) {
         option (google.api.http) = {
             post: "/v1/user/login"
@@ -28,6 +29,8 @@ service ToDoList {
             body: "*"
         };
     }
+
+    // Category
     rpc CreateCategory(CreateCategoryRequest) returns (Response) {
         option (google.api.http) = {
             post: "/v1/category/create"

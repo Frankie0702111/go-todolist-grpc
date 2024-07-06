@@ -97,5 +97,5 @@ func ParseSortBy(str string) map[string]bool {
 }
 
 type ReqId struct {
-	Id int64 `json:"id" validate:"required,min=1"`
+	Id int32 `json:"id" validate:"required,min=1"`
 }
