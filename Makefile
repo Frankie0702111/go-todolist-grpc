@@ -19,6 +19,14 @@ grpcui:
 migrate-create:
 		$(DOCKER) migrate create -ext sql -dir ./internal/migrations -seq create_$(table)_table
 
+# make migrate-up number=x
+migrate-up:
+		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" up $(number)
+
+# make migrate-down number=x
+migrate-down:
+		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" down $(number)
+
 # make migrate-test-up number=x
 migrate-test-up:
 		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" up $(number)
@@ -57,4 +65,4 @@ go-test:
 go-test-single:
 	$(DOCKER) go test -v internal/service/s_category_test.go;
 
-.PHONY: proto grpcui migrate-create migrate-test-up migrate-test-down clean-logs go-test go-test-single
+.PHONY: proto grpcui migrate-create migrate-up migrate-down migrate-test-up migrate-test-down clean-logs go-test go-test-single

@@ -21,6 +21,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -80,7 +81,7 @@ func main() {
 func runGrpcServer(cnf *config.Config, ctx context.Context, waitGroup *errgroup.Group) {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			middleware.Verify(cnf),
+			middleware.VerifyTokenByGrpc(cnf),
 		)),
 	)
 	pb.RegisterToDoListServer(grpcServer, &service.Server{})
@@ -125,7 +126,16 @@ func runGatewayServer(cnf *config.Config, ctx context.Context, waitGroup *errgro
 		},
 	})
 
-	grpcMux := runtime.NewServeMux(jsonOption)
+	// Add custom metadata propagator
+	option := runtime.WithMetadata(func(ctx context.Context, r *http.Request) metadata.MD {
+		md := metadata.New(nil)
+		if claims := r.Header.Get("X-Auth-Claims"); claims != "" {
+			md.Set("x-auth-claims", claims)
+		}
+		return md
+	})
+
+	grpcMux := runtime.NewServeMux(jsonOption, option)
 	if err := pb.RegisterToDoListHandlerServer(ctx, grpcMux, &service.Server{}); err != nil {
 		log.Error.Printf("cannot register handler server: %v", err)
 	}
@@ -133,8 +143,10 @@ func runGatewayServer(cnf *config.Config, ctx context.Context, waitGroup *errgro
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
+	handler := middleware.VerifyTokenByGateway(cnf)(mux)
+
 	httpServer := &http.Server{
-		Handler: grpcMux,
+		Handler: handler,
 		Addr:    ":" + cnf.HttpServerPort,
 	}
 
