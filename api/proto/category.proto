@@ -9,22 +9,22 @@ message CreateCategoryRequest {
 }
 
 message GetCategoryRequest {
-    int64 id = 1;
+    int32 id = 1;
 }
 
 message ListCategoryRequest {
     int32 page = 1;
     int32 page_size = 2;
     optional string sort_by = 3;
-    optional int64 category_id = 4;
+    optional int32 category_id = 4;
     optional string name = 5;
 }
 
 message UpdateCategoryRequest {
-    int64 id = 1;
+    int32 id = 1;
     optional string name = 2;
 }
   
   message DeleteCategoryRequest {
-    int64 id = 1;
+    int32 id = 1;
 }

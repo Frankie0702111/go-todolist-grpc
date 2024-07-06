@@ -50,7 +50,7 @@ func (s *Server) CreateCategory(ctx context.Context, req *pb.CreateCategoryReque
 	}
 
 	categoryInfo := &pb.Category{
-		Id:        int64(category.ID.Val),
+		Id:        int32(category.ID.Val),
 		Name:      category.Name.Val,
 		CreatedAt: util.GetFullDateStr(category.CreatedAt.Val),
 		UpdatedAt: util.GetFullDateStr(category.UpdatedAt.Val),
@@ -83,7 +83,7 @@ func (s *Server) GetCategory(ctx context.Context, req *pb.GetCategoryRequest) (*
 	return &pb.Response{
 		Data: &pb.Response_Category{
 			Category: &pb.Category{
-				Id:        int64(getCategory.ID),
+				Id:        int32(getCategory.ID),
 				Name:      getCategory.Name,
 				CreatedAt: util.GetFullDateStr(getCategory.CreatedAt),
 				UpdatedAt: util.GetFullDateStr(getCategory.UpdatedAt),
@@ -98,7 +98,7 @@ type ReqListCategory struct {
 	Page       int32   `json:"page" validate:"required,min=1,max=100000"`
 	PageSize   int32   `json:"page_size" validate:"required,min=5,max=1000"`
 	SortBy     *string `json:"sort_by" validate:"omitempty,max=10"`
-	CategoryId *int64  `json:"category_id" validate:"omitempty,min=1"`
+	CategoryId *int32  `json:"category_id" validate:"omitempty,min=1"`
 	Name       *string `json:"name" validate:"omitempty,min=1,max=128"`
 }
 
@@ -143,7 +143,7 @@ func (s *Server) ListCategory(ctx context.Context, req *pb.ListCategoryRequest) 
 	pbCategories := []*pb.Category{}
 	for _, category := range listCategory {
 		pbCategories = append(pbCategories, &pb.Category{
-			Id:        int64(category.ID),
+			Id:        int32(category.ID),
 			Name:      category.Name,
 			CreatedAt: util.GetFullDateStr(category.CreatedAt),
 			UpdatedAt: util.GetFullDateStr(category.UpdatedAt),
@@ -165,7 +165,7 @@ func (s *Server) ListCategory(ctx context.Context, req *pb.ListCategoryRequest) 
 }
 
 type ReqUpdateCategory struct {
-	Id   int64   `json:"id" validate:"required,min=1"`
+	Id   int32   `json:"id" validate:"required,min=1"`
 	Name *string `json:"name" validate:"omitempty,min=1,max=128"`
 }
 
@@ -222,7 +222,7 @@ func (s *Server) UpdateCategory(ctx context.Context, req *pb.UpdateCategoryReque
 		return &pb.Response{
 			Data: &pb.Response_Category{
 				Category: &pb.Category{
-					Id:        int64(getCategory.ID),
+					Id:        int32(getCategory.ID),
 					Name:      getCategory.Name,
 					CreatedAt: util.GetFullDateStr(getCategory.CreatedAt),
 					UpdatedAt: util.GetFullDateStr(getCategory.UpdatedAt),

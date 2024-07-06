@@ -137,7 +137,7 @@ func (i Int64) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 }
 
 func (i Int64) GormDataType() string {
-	return "int"
+	return "int64"
 }
 
 // Int32Array
@@ -237,7 +237,7 @@ func (f Float64) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 }
 
 func (f Float64) GormDataType() string {
-	return "float"
+	return "float64"
 }
 
 // NullFloat32
@@ -293,7 +293,7 @@ func (f NullFloat64) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 }
 
 func (f NullFloat64) GormDataType() string {
-	return "float"
+	return "float64"
 }
 
 // Time

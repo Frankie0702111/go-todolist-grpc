@@ -132,7 +132,7 @@ func ListCategory(conn *sql.DB, cons *CategoryConditions, orderBys *CategoryOrde
 	return categories
 }
 
-func GetCategoryCount(conn *sql.DB, cons *CategoryConditions) (int64, error) {
+func GetCategoryCount(conn *sql.DB, cons *CategoryConditions) (int32, error) {
 	var count int64
 
 	stmt := db.GormDriver(conn).Model(Category{})
@@ -146,7 +146,7 @@ func GetCategoryCount(conn *sql.DB, cons *CategoryConditions) (int64, error) {
 		return 0, err
 	}
 
-	return count, nil
+	return int32(count), nil
 }
 
 func UpdateCategory(conn *sql.Tx, id int, values *CategoryFieldValues) error {

@@ -33,9 +33,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ToDoListClient interface {
+	// User
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*Response, error)
 	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*Response, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Response, error)
+	// Category
 	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*Response, error)
 	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*Response, error)
 	ListCategory(ctx context.Context, in *ListCategoryRequest, opts ...grpc.CallOption) (*ListResponse, error)
@@ -135,9 +137,11 @@ func (c *toDoListClient) DeleteCategory(ctx context.Context, in *DeleteCategoryR
 // All implementations must embed UnimplementedToDoListServer
 // for forward compatibility
 type ToDoListServer interface {
+	// User
 	Login(context.Context, *LoginRequest) (*Response, error)
 	RegisterUser(context.Context, *RegisterUserRequest) (*Response, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*Response, error)
+	// Category
 	CreateCategory(context.Context, *CreateCategoryRequest) (*Response, error)
 	GetCategory(context.Context, *GetCategoryRequest) (*Response, error)
 	ListCategory(context.Context, *ListCategoryRequest) (*ListResponse, error)

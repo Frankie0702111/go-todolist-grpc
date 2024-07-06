@@ -79,7 +79,7 @@ func (s *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) 
 	}
 
 	userInfo := &pb.User{
-		Id:        int64(user.ID.Val),
+		Id:        int32(user.ID.Val),
 		Username:  user.Username.Val,
 		Email:     user.Email.Val,
 		CreatedAt: util.GetFullDateStr(user.CreatedAt.Val),
@@ -122,7 +122,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 	}
 
 	// Grnerate token
-	token, tokenErr := util.GenerateToken(cnf.JwtTtl, cnf.JwtSecretKey, int64(getUser.ID))
+	token, tokenErr := util.GenerateToken(cnf.JwtTtl, cnf.JwtSecretKey, int(getUser.ID))
 	if tokenErr != nil {
 		log.Error.Printf("failed to generate token: %v", tokenErr)
 		return nil, status.Errorf(codes.Internal, "failed to generate token: %v", tokenErr)
@@ -131,7 +131,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 	return &pb.Response{
 		Data: &pb.Response_User{
 			User: &pb.User{
-				Id:        int64(getUser.ID),
+				Id:        int32(getUser.ID),
 				Username:  getUser.Username,
 				Email:     getUser.Email,
 				CreatedAt: util.GetFullDateStr(getUser.CreatedAt),
@@ -145,7 +145,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 }
 
 type ReqUpdateUser struct {
-	UserId   int64   `json:"user_id" validate:"required"`
+	UserId   int32   `json:"user_id" validate:"required"`
 	Username *string `json:"username" validate:"omitempty,min=3,max=32"`
 	Password *string `json:"password" validate:"omitempty,min=8"`
 }
@@ -220,7 +220,7 @@ func (s *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb
 		return &pb.Response{
 			Data: &pb.Response_User{
 				User: &pb.User{
-					Id:        int64(getUser.ID),
+					Id:        int32(getUser.ID),
 					Username:  getUser.Username,
 					Email:     getUser.Email,
 					CreatedAt: util.GetFullDateStr(getUser.CreatedAt),
