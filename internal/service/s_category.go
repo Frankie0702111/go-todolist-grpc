@@ -215,8 +215,8 @@ func (s *Server) UpdateCategory(ctx context.Context, req *pb.UpdateCategoryReque
 
 		comErr := tx.Commit()
 		if comErr != nil {
-			log.Error.Printf("failed to create user from db tx: %v", comErr)
-			return nil, status.Errorf(codes.Internal, "failed to create user from db tx: %v", comErr)
+			log.Error.Printf("failed to create category from db tx: %v", comErr)
+			return nil, status.Errorf(codes.Internal, "failed to create category from db tx: %v", comErr)
 		}
 
 		return &pb.Response{
@@ -266,8 +266,8 @@ func (s *Server) DeleteCategory(ctx context.Context, req *pb.DeleteCategoryReque
 
 	comErr := tx.Commit()
 	if comErr != nil {
-		log.Error.Printf("failed to create user from db tx: %v", comErr)
-		return nil, status.Errorf(codes.Internal, "failed to create user from db tx: %v", comErr)
+		log.Error.Printf("failed to create category from db tx: %v", comErr)
+		return nil, status.Errorf(codes.Internal, "failed to create category from db tx: %v", comErr)
 	}
 
 	return &pb.Response{

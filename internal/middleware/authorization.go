@@ -23,6 +23,11 @@ var authRequiredMethods = map[string]bool{
 	"/pb.ToDoList/ListCategory":   true,
 	"/pb.ToDoList/UpdateCategory": true,
 	"/pb.ToDoList/DeleteCategory": true,
+	"/pb.ToDoList/CreateTask":     true,
+	"/pb.ToDoList/GetTask":        true,
+	"/pb.ToDoList/ListTask":       true,
+	"/pb.ToDoList/UpdateTask":     true,
+	"/pb.ToDoList/DeleteTask":     true,
 
 	// gateway
 	"/v1/user/update":     true,
@@ -31,6 +36,11 @@ var authRequiredMethods = map[string]bool{
 	"/v1/category/list":   true,
 	"/v1/category/update": true,
 	"/v1/category/delete": true,
+	"/v1/task/create":     true,
+	"/v1/task/get":        true,
+	"/v1/task/list":       true,
+	"/v1/task/update":     true,
+	"/v1/task/delete":     true,
 }
 
 func VerifyTokenByGrpc(cnf *config.Config) grpc.UnaryServerInterceptor {
@@ -108,7 +118,7 @@ func VerifyTokenByGateway(cnf *config.Config) func(http.Handler) http.Handler {
 	}
 }
 
-func GetClaimsFromContext(ctx context.Context) (map[string]interface{}, error) {
+func GetClaimsFromContext(ctx context.Context) (*util.CustomClaims, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return nil, errors.New("no metadata found in context")
@@ -119,10 +129,10 @@ func GetClaimsFromContext(ctx context.Context) (map[string]interface{}, error) {
 		return nil, errors.New("no claims found in metadata")
 	}
 
-	var claims map[string]interface{}
+	var claims util.CustomClaims
 	if err := json.Unmarshal([]byte(claimsJSON[0]), &claims); err != nil {
 		return nil, errors.New("failed to parse claims")
 	}
 
-	return claims, nil
+	return &claims, nil
 }

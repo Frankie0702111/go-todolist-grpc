@@ -5,6 +5,7 @@ package pb;
 import "google/api/annotations.proto";
 import "user.proto";
 import "category.proto";
+import "task.proto";
 import "public.proto";
 
 option go_package = "go-todolist-grpc/api/pb";
@@ -58,6 +59,38 @@ service ToDoList {
     rpc DeleteCategory(DeleteCategoryRequest) returns (Response) {
         option (google.api.http) = {
             post: "/v1/category/delete"
+            body: "*"
+        };
+    }
+
+    // Task
+    rpc CreateTask(CreateTaskRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/task/create"
+            body: "*"
+        };
+    }
+    rpc GetTask(GetTaskRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/task/get"
+            body: "*"
+        };
+    }
+    rpc ListTask(ListTaskRequest) returns (ListResponse) {
+        option (google.api.http) = {
+            post: "/v1/task/list"
+            body: "*"
+        };
+    }
+    rpc UpdateTask(UpdateTaskRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/task/update"
+            body: "*"
+        };
+    }
+    rpc DeleteTask(DeleteTaskRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/v1/task/delete"
             body: "*"
         };
     }
