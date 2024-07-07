@@ -13,6 +13,10 @@ type Server struct {
 	pb.UnimplementedToDoListServer
 }
 
+type ReqId struct {
+	Id int32 `json:"id" validate:"required,min=1"`
+}
+
 func bindRequest(req interface{}, reqStruct interface{}) error {
 	reqVal := reflect.ValueOf(req).Elem()
 	val := reflect.ValueOf(reqStruct).Elem()
@@ -96,6 +100,6 @@ func ParseSortBy(str string) map[string]bool {
 	return rtn
 }
 
-type ReqId struct {
-	Id int32 `json:"id" validate:"required,min=1"`
+func Pointer[T any](value T) *T {
+	return &value
 }

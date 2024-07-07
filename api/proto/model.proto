@@ -20,4 +20,17 @@ message Category {
     string updated_at = 4;
 }
 
-// To Do: Task
+message Task {
+    int32 id = 1;
+    int32 user_id = 2;
+    int32 category_id = 3;
+    string title = 4;
+    string note = 5;
+    string url = 6;
+    string specify_datetime = 7;
+    bool is_specify_time = 8;
+    int32 priority = 9;
+    bool is_complete = 10;
+    string created_at = 11;
+    string updated_at = 12;
+}
