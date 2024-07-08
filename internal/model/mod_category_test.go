@@ -61,8 +61,10 @@ func TestCreateCategory(t *testing.T) {
 	defer setDownModCategory()
 
 	t.Run("Success", func(t *testing.T) {
-		_, err := createCategory(util.RandomString(6))
+		category, err := createCategory(util.RandomString(6))
 		assert.Nil(t, err)
+		assert.NotNil(t, category)
+		assert.NotZero(t, category.ID.Val)
 	})
 
 	t.Run("Failure_DuplicateName", func(t *testing.T) {
@@ -111,8 +113,7 @@ func TestGetCategoryByID(t *testing.T) {
 	})
 
 	t.Run("Failure_Non-ExistentID", func(t *testing.T) {
-		id := 999999
-		category := model.GetCategoryByID(sqlDBCategory, id)
+		category := model.GetCategoryByID(sqlDBCategory, 999999)
 		assert.Nil(t, category)
 	})
 }
@@ -226,8 +227,7 @@ func TestDeleteCategory(t *testing.T) {
 	})
 
 	t.Run("Failure_Non-ExistentID", func(t *testing.T) {
-		id := 999999
-		err := model.DeleteCategory(sqlTxCategory, id)
+		err := model.DeleteCategory(sqlTxCategory, 999999)
 		fmt.Printf("error = %v\n", err)
 		assert.Nil(t, err)
 	})

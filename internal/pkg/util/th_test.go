@@ -21,6 +21,26 @@ func TestGetFullDateStr(t *testing.T) {
 	})
 }
 
+func TestGetFullDateStrFromPtr(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		now := time.Now()
+		dateStrPtr := util.GetFullDateStrFromPtr(&now)
+		assert.NotNil(t, dateStrPtr)
+		assert.NotEmpty(t, *dateStrPtr)
+	})
+
+	t.Run("Failure_NilTime", func(t *testing.T) {
+		dateStrPtr := util.GetFullDateStrFromPtr(nil)
+		assert.Nil(t, dateStrPtr)
+	})
+
+	t.Run("Failure_ZeroTime", func(t *testing.T) {
+		zeroTime := time.Time{}
+		dateStrPtr := util.GetFullDateStrFromPtr(&zeroTime)
+		assert.Nil(t, dateStrPtr)
+	})
+}
+
 func TestGetSimpleDateStr(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		now := time.Now()
