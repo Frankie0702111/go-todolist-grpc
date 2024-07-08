@@ -90,7 +90,7 @@ func (s *Server) CreateTask(ctx context.Context, req *pb.CreateTaskRequest) (*pb
 		Title:           task.Title.Val,
 		Note:            task.Note.Val,
 		Url:             task.Url.Val,
-		SpecifyDatetime: util.GetFullDateStr(task.SpecifyDatetime.Val),
+		SpecifyDatetime: util.GetFullDateStrFromPtr(&task.SpecifyDatetime.Val),
 		IsSpecifyTime:   task.IsSpecifyTime.Val,
 		Priority:        int32(task.Priority.Val),
 		IsComplete:      task.IsComplete.Val,
@@ -131,7 +131,7 @@ func (s *Server) GetTask(ctx context.Context, req *pb.GetTaskRequest) (*pb.Respo
 				Title:           getTask.Title,
 				Note:            getTask.Note,
 				Url:             getTask.Url,
-				SpecifyDatetime: util.GetFullDateStr(getTask.SpecifyDatetime),
+				SpecifyDatetime: util.GetFullDateStrFromPtr(&getTask.SpecifyDatetime),
 				IsSpecifyTime:   getTask.IsSpecifyTime,
 				Priority:        int32(getTask.Priority),
 				IsComplete:      getTask.IsComplete,
@@ -147,7 +147,7 @@ func (s *Server) GetTask(ctx context.Context, req *pb.GetTaskRequest) (*pb.Respo
 type ReqListTask struct {
 	Page          int32   `json:"page" validate:"required,min=1,max=100000"`
 	PageSize      int32   `json:"page_size" validate:"required,min=5,max=1000"`
-	SortBy        *string `json:"sort_by" validate:"omitempty,max=10"`
+	SortBy        *string `json:"sort_by" validate:"omitempty,max=15"`
 	TaskId        *int32  `json:"task_id" validate:"omitempty,min=1"`
 	CategoryId    *int32  `json:"category_id" validate:"omitempty,min=1"`
 	Title         *string `json:"title" validate:"omitempty,max=100"`
@@ -225,7 +225,7 @@ func (s *Server) ListTask(ctx context.Context, req *pb.ListTaskRequest) (*pb.Lis
 			Title:           task.Title,
 			Note:            task.Note,
 			Url:             task.Url,
-			SpecifyDatetime: util.GetFullDateStr(task.SpecifyDatetime),
+			SpecifyDatetime: util.GetFullDateStrFromPtr(&task.SpecifyDatetime),
 			IsSpecifyTime:   task.IsSpecifyTime,
 			Priority:        int32(task.Priority),
 			IsComplete:      task.IsComplete,
@@ -250,7 +250,7 @@ func (s *Server) ListTask(ctx context.Context, req *pb.ListTaskRequest) (*pb.Lis
 
 type ReqUpdateTask struct {
 	Id              int32   `json:"id" validate:"required,min=1"`
-	CategoryId      *int32  `json:"category_id" validate:"required,min=1"`
+	CategoryId      *int32  `json:"category_id" validate:"omitempty,min=1"`
 	Title           *string `json:"title" validate:"omitempty,max=100"`
 	Note            *string `json:"note" validate:"omitempty,max=255"`
 	Url             *string `json:"url" validate:"omitempty,max=255"`
@@ -348,7 +348,7 @@ func (s *Server) UpdateTask(ctx context.Context, req *pb.UpdateTaskRequest) (*pb
 					Title:           getTask.Title,
 					Note:            getTask.Note,
 					Url:             getTask.Url,
-					SpecifyDatetime: util.GetFullDateStr(getTask.SpecifyDatetime),
+					SpecifyDatetime: util.GetFullDateStrFromPtr(&getTask.SpecifyDatetime),
 					IsSpecifyTime:   getTask.IsSpecifyTime,
 					Priority:        int32(getTask.Priority),
 					IsComplete:      getTask.IsComplete,

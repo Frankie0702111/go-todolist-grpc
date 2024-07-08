@@ -26,6 +26,16 @@ func GetFullDateStr(t time.Time) string {
 	return t.In(GetServiceTimeLoc()).Format(FullDateLayout)
 }
 
+func GetFullDateStrFromPtr(t *time.Time) *string {
+	if t == nil || t.IsZero() {
+		return nil
+	}
+
+	str := GetFullDateStr(*t)
+
+	return &str
+}
+
 func GetSimpleDateStr(t time.Time) string {
 	return t.In(GetServiceTimeLoc()).Format(SimpleDateLayout)
 }

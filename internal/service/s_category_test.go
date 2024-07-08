@@ -278,7 +278,6 @@ func TestUpdateCategory(t *testing.T) {
 		assert.Equal(t, int32(http.StatusOK), res.Status)
 		assert.Equal(t, "ok", res.Message)
 		assert.Equal(t, newName, res.GetCategory().Name)
-		assert.NotEmpty(t, res.GetCategory().Name)
 	})
 
 	t.Run("Failure_Non-ExistentID", func(t *testing.T) {
