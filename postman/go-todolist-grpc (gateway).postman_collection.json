@@ -1,0 +1,1231 @@
+{
+	"info": {
+		"_postman_id": "5adb673e-e66b-489b-b4e2-e83728091b48",
+		"name": "go-todolist-grpc (gateway)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8592748"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();",
+									"",
+									"// console.log(res.user.token);",
+									"",
+									"pm.environment.set(\"token\", res.user.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/user/login",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"login"
+							]
+						},
+						"description": "#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| email | string | Max=64 | True | Must conform to mailbox format |\n| password | String | Min=8 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| user | Object | User infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Login ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/user/login",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"user",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "381"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:14:24 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"test\",\n        \"email\": \"test@example.com\",\n        \"created_at\": \"2024-07-06T17:14:15.269848+08:00\",\n        \"updated_at\": \"2024-07-06T17:14:15.269848+08:00\",\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MjAzNDM2NjQsImlhdCI6MTcyMDI1NzI2NCwiaXNzIjoiZ28tdG9kb2xpc3QtZ3JwYyJ9.bu30mN3oDYwlrsnbWCWPgytZDr20NjPInx-d7R9F2xk\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"username\": \"test\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/user/register",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"register"
+							]
+						},
+						"description": "#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| email | String | Max=64 | True | Must conform to mailbox format. |\n| unsename | String | Min=3, Max=32 | True |  |\n| password | String | Min=8 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| user | Object | User infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Register ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@example.com\",\n    \"username\": \"test\",\n    \"password\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/user/register",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "192"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:14:15 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"test\",\n        \"email\": \"test@example.com\",\n        \"created_at\": \"2024-07-06T17:14:15.269847+08:00\",\n        \"updated_at\": \"2024-07-06T17:14:15.269847+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"username\": \"test111\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/user/update",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"update"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| user_id | Int32 | Min=1 | True |  |\n| unsename | String | Min=3, Max=32 | False |  |\n| password | String | Min=8 | False |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| user | Object | User infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Update ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 1,\n    \"username\": \"test111\",\n    \"password\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/user/update",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"user",
+										"update"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "195"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:14:33 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"test111\",\n        \"email\": \"test@example.com\",\n        \"created_at\": \"2024-07-06T17:14:15.269848+08:00\",\n        \"updated_at\": \"2024-07-06T17:14:33.746877+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/category/create",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"category",
+								"create"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| name | String | Min=1, Max=128 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| category | Object | Category infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Create ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/category/create",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"category",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "164"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:10:57 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"category\": {\n        \"id\": 1,\n        \"name\": \"test\",\n        \"created_at\": \"2024-07-06T17:10:57.601914+08:00\",\n        \"updated_at\": \"2024-07-06T17:10:57.601914+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/category/get",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"category",
+								"get"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| id | Int32 | Min=1 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| category | Object | Category infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Get ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/category/get",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"category",
+										"get"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "164"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:11:08 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"category\": {\n        \"id\": 1,\n        \"name\": \"test\",\n        \"created_at\": \"2024-07-06T17:10:57.601915+08:00\",\n        \"updated_at\": \"2024-07-06T17:10:57.601915+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"page\": 1,\n    \"page_size\": 5,\n    \"category_id\": 1,\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/category/list",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"category",
+								"list"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| page | Int32 | Min=1, Max=100000 | True |  |\n| page_size | Int32 | Min=5, Max=1000 | True |  |\n| sort_by | String | Max=10 | False | \\-id, +id  <br>\\-name, +name |\n| category_id | Int32 | Min=1 | False |  |\n| name | String | Min=1, Max=128 | False |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| categories | Object | Category infomation |\n| total_count | Int32 |  |\n| page | Int32 |  |\n| page_size | Int32 |  |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "List all ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"page\": 1,\n    \"page_size\": 5,\n    \"sort_by\": \"-id\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/category/list",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"category",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "746"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:12:26 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"categories\": {\n        \"data\": [\n            {\n                \"id\": 10,\n                \"name\": \"test111111111\",\n                \"created_at\": \"2024-07-06T17:11:57.016566+08:00\",\n                \"updated_at\": \"2024-07-06T17:11:57.016566+08:00\"\n            },\n            {\n                \"id\": 9,\n                \"name\": \"test11111111\",\n                \"created_at\": \"2024-07-06T17:11:54.810327+08:00\",\n                \"updated_at\": \"2024-07-06T17:11:54.810327+08:00\"\n            },\n            {\n                \"id\": 8,\n                \"name\": \"test1111111\",\n                \"created_at\": \"2024-07-06T17:11:52.61454+08:00\",\n                \"updated_at\": \"2024-07-06T17:11:52.61454+08:00\"\n            },\n            {\n                \"id\": 7,\n                \"name\": \"test111111\",\n                \"created_at\": \"2024-07-06T17:11:50.583882+08:00\",\n                \"updated_at\": \"2024-07-06T17:11:50.583882+08:00\"\n            },\n            {\n                \"id\": 6,\n                \"name\": \"test11111\",\n                \"created_at\": \"2024-07-06T17:11:48.509642+08:00\",\n                \"updated_at\": \"2024-07-06T17:11:48.509642+08:00\"\n            }\n        ]\n    },\n    \"total_count\": 10,\n    \"page\": 1,\n    \"page_size\": 5,\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						},
+						{
+							"name": "List filter ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"page\": 1,\n    \"page_size\": 5,\n    \"category_id\": 1,\n    \"name\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/category/list",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"category",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "219"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:12:03 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"categories\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"name\": \"test\",\n                \"created_at\": \"2024-07-06T17:10:57.601915+08:00\",\n                \"updated_at\": \"2024-07-06T17:10:57.601915+08:00\"\n            }\n        ]\n    },\n    \"total_count\": 1,\n    \"page\": 1,\n    \"page_size\": 5,\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"name\": \"test0\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/category/update",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"category",
+								"update"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| id | Int32 | Min=1 | True |  |\n| name | String | Min=1, Max=128 | False |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| category | Object | Category infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Update ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1,\n    \"name\": \"test0\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/category/update",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"category",
+										"update"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "165"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:13:56 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"category\": {\n        \"id\": 1,\n        \"name\": \"test0\",\n        \"created_at\": \"2024-07-06T17:10:57.601915+08:00\",\n        \"updated_at\": \"2024-07-06T17:13:56.391529+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/category/delete",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"category",
+								"delete"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| id | Int32 | Min=1 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Delete ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/category/delete",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"category",
+										"delete"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "30"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2024 09:14:03 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_id\": 1,\n    \"title\": \"Test-title\",\n    \"note\": \"Test-note\",\n    \"url\": \"http://example.com\",\n    \"specify_datetime\": 1720281599000,\n    \"priority\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/task/create",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"task",
+								"create"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| category_id | Int32 | Min=1 | True |  |\n| title | String | Max=100 | True |  |\n| note | String | Max=255 | False |  |\n| url | String | Max=255 | False |  |\n| specify_datetime | Int64 | Min=1 | False |  |\n| priority | Int32 | Between 1 and 3 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| task | Object | Task infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Create ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"category_id\": 1,\n    \"title\": \"Test-title\",\n    \"note\": \"Test-note\",\n    \"url\": \"http://example.com\",\n    \"specify_datetime\": 1720281599000,\n    \"priority\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/task/create",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"task",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "319"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 12:23:04 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"task\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"category_id\": 1,\n        \"title\": \"Test-title\",\n        \"note\": \"Test-note\",\n        \"url\": \"http://example.com\",\n        \"specify_datetime\": \"2024-07-06T23:59:59+08:00\",\n        \"is_specify_time\": true,\n        \"priority\": 1,\n        \"created_at\": \"2024-07-07T20:23:04.186633+08:00\",\n        \"updated_at\": \"2024-07-07T20:23:04.186633+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/task/get",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"task",
+								"get"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| id | Int32 | Min=1 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| task | Object | Task infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Get ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/task/get",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"task",
+										"get"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "319"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 12:23:58 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"task\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"category_id\": 1,\n        \"title\": \"Test-title\",\n        \"note\": \"Test-note\",\n        \"url\": \"http://example.com\",\n        \"specify_datetime\": \"2024-07-06T23:59:59+08:00\",\n        \"is_specify_time\": true,\n        \"priority\": 1,\n        \"created_at\": \"2024-07-07T20:23:04.186634+08:00\",\n        \"updated_at\": \"2024-07-07T20:23:04.186634+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"page\": 1,\n    \"page_size\": 5,\n    \"sort_by\": \"-id\",\n    \"title\": \"T\",\n    \"is_specify_time\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/task/list",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"task",
+								"list"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| page | Int32 | Min=1, Max=100000 | True |  |\n| page_size | Int32 | Min=5, Max=1000 | True |  |\n| sort_by | String | Max=10 | False | \\-id, +id  <br>\\-category_id, +category_id  <br>\\-priority, +priority |\n| task_id | Int32 | Min=1 | False |  |\n| category_id | Int32 | Min=1 | False |  |\n| title | String | Max=100 | False |  |\n| is_specify_time | Bool | true or false | False |  |\n| priority | Int32 | Between 1 and 3 | False |  |\n| is_complete | Bool | true or false | False |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| tasks | Object | Task infomation |\n| total_count | Int32 |  |\n| page | Int32 |  |\n| page_size | Int32 |  |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "List all ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"page\": 1,\n    \"page_size\": 5,\n    \"sort_by\": \"-id\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/task/list",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"task",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "370"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 12:24:55 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"tasks\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"user_id\": 1,\n                \"category_id\": 1,\n                \"title\": \"Test-title\",\n                \"note\": \"Test-note\",\n                \"url\": \"http://example.com\",\n                \"specify_datetime\": \"2024-07-06T23:59:59+08:00\",\n                \"is_specify_time\": true,\n                \"priority\": 1,\n                \"created_at\": \"2024-07-07T20:23:04.186634+08:00\",\n                \"updated_at\": \"2024-07-07T20:23:04.186634+08:00\"\n            }\n        ]\n    },\n    \"total_count\": 1,\n    \"page\": 1,\n    \"page_size\": 5,\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						},
+						{
+							"name": "List filter ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"page\": 1,\n    \"page_size\": 5,\n    \"sort_by\": \"-id\",\n    \"title\": \"T\",\n    \"is_specify_time\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/task/list",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"task",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "347"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 12:28:33 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"tasks\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"user_id\": 1,\n                \"category_id\": 1,\n                \"title\": \"Test-title\",\n                \"note\": \"Test-note\",\n                \"url\": \"http://example.com\",\n                \"specify_datetime\": \"0001-01-01T08:00:00+08:00\",\n                \"priority\": 1,\n                \"created_at\": \"2024-07-07T20:23:04.186634+08:00\",\n                \"updated_at\": \"2024-07-07T20:23:04.186634+08:00\"\n            }\n        ]\n    },\n    \"total_count\": 1,\n    \"page\": 1,\n    \"page_size\": 5,\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"category_id\": 2,\n    \"title\": \"Test-title222\",\n    \"note\": \"Test-note222\",\n    \"url\": \"http://example.com\",\n    \"specify_datetime\": 1720281599000,\n    \"priority\": 2,\n    \"is_complete\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/task/update",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"task",
+								"update"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| id | Int32 | Min=1 | True |  |\n| category_id | Int32 | Min=1 | False |  |\n| title | String | Max=100 | False |  |\n| note | String | Max=255 | False |  |\n| url | String | Max=255 | False |  |\n| specify_datetime | Int64 | Min=1 | False |  |\n| priority | Int32 | Between 1 and 3 | False |  |\n| is_complete | Bool | true or false | False |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| tasks | Object | Task infomation |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Update ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1,\n    \"category_id\": 2,\n    \"title\": \"Test-title222\",\n    \"note\": \"Test-note222\",\n    \"url\": \"http://example.com\",\n    \"specify_datetime\": 1720281599000,\n    \"priority\": 2,\n    \"is_complete\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/task/update",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"task",
+										"update"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "343"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 12:29:39 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"task\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"category_id\": 2,\n        \"title\": \"Test-title222\",\n        \"note\": \"Test-note222\",\n        \"url\": \"http://example.com\",\n        \"specify_datetime\": \"2024-07-06T23:59:59+08:00\",\n        \"is_specify_time\": true,\n        \"priority\": 2,\n        \"is_complete\": true,\n        \"created_at\": \"2024-07-07T20:23:04.186634+08:00\",\n        \"updated_at\": \"2024-07-07T20:29:39.63399+08:00\"\n    },\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}/v1/task/delete",
+							"host": [
+								"{{http_host}}"
+							],
+							"path": [
+								"v1",
+								"task",
+								"delete"
+							]
+						},
+						"description": "#### **Required**\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| Authorization | String | Basic access authorization |\n\n#### **Request**\n\nBody `application / json`\n\n| **Parameters** | **Type** | **Length** | **Required** | Explanation |\n| --- | --- | --- | --- | --- |\n| id | Int32 | Min=1 | True |  |\n\n#### Response\n\n| **Parameters** | **Type** | Explanation |\n| --- | --- | --- |\n| status | Int32 | 200 |\n| message | String | OK |"
+					},
+					"response": [
+						{
+							"name": "Delete ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{http_host}}/v1/task/delete",
+									"host": [
+										"{{http_host}}"
+									],
+									"path": [
+										"v1",
+										"task",
+										"delete"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "29"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 07 Jul 2024 12:30:42 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"ok\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
