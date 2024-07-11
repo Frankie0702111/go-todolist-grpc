@@ -228,7 +228,6 @@ func TestDeleteCategory(t *testing.T) {
 
 	t.Run("Failure_Non-ExistentID", func(t *testing.T) {
 		err := model.DeleteCategory(sqlTxCategory, 999999)
-		fmt.Printf("error = %v\n", err)
 		assert.Nil(t, err)
 	})
 }

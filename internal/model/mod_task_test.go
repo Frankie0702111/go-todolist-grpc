@@ -112,7 +112,6 @@ func TestCreateTask(t *testing.T) {
 
 	t.Run("Failure_InvalidID", func(t *testing.T) {
 		_, err := createTask(-1, 1)
-		fmt.Printf("err = %v\n", err)
 		assert.NotNil(t, err)
 		assert.EqualError(t, err, "pq: insert or update on table \"tasks\" violates foreign key constraint \"users_user_id_foreign\"")
 	})
