@@ -73,7 +73,12 @@ go-test-single:
 	go test -v internal/service/s_task_test.go;
 
 go-test-ci:
-	migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" up
-	go test -v -short ./...
+	@set -e; \
+	start_time=$$(date +%s); \
+	migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" up; \
+	go test -v -short ./...; \
+	end_time=$$(date +%s); \
+	total_duration=$$((end_time - start_time)); \
+	echo "Total execution time: $${total_duration}s";
 
 .PHONY: proto grpcui migrate-create migrate-up migrate-down migrate-test-up migrate-test-down clean-logs go-test go-test-single go-test-ci
