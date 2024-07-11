@@ -51,18 +51,18 @@ go-test:
 	start_time=$$(date +%s); \
 	echo "Starting tests at $$(date)"; \
 	make migrate-test-up; \
-	$(DOCKER) go test -v internal/config/config_test.go -json > ./target/log/config_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/db/db_test.go -json > ./target/log/db_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/util/hash_test.go -json > ./target/log/hash_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/util/jwt_test.go -json > ./target/log/jwt_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/util/random_test.go -json > ./target/log/random_test$(YMD).log; \
-	$(DOCKER) go test -v internal/pkg/util/th_test.go -json > ./target/log/th_test$(YMD).log; \
-	$(DOCKER) go test -v internal/model/mod_user_test.go -json > ./target/log/mod_user_test$(YMD).log; \
-	$(DOCKER) go test -v internal/service/s_user_test.go -json > ./target/log/s_user_test$(YMD).log; \
-	$(DOCKER) go test -v internal/model/mod_category_test.go -json > ./target/log/mod_category_test$(YMD).log; \
-	$(DOCKER) go test -v internal/service/s_category_test.go -json > ./target/log/s_category_test$(YMD).log; \
-	$(DOCKER) go test -v internal/model/mod_task_test.go -json > ./target/log/mod_task_test$(YMD).log; \
-	$(DOCKER) go test -v internal/service/s_task_test.go -json > ./target/log/s_task_test$(YMD).log; \
+	go test -v internal/config/config_test.go -json > ./target/log/config_test$(YMD).log; \
+	go test -v internal/pkg/db/db_test.go -json > ./target/log/db_test$(YMD).log; \
+	go test -v internal/pkg/util/hash_test.go -json > ./target/log/hash_test$(YMD).log; \
+	go test -v internal/pkg/util/jwt_test.go -json > ./target/log/jwt_test$(YMD).log; \
+	go test -v internal/pkg/util/random_test.go -json > ./target/log/random_test$(YMD).log; \
+	go test -v internal/pkg/util/th_test.go -json > ./target/log/th_test$(YMD).log; \
+	go test -v internal/model/mod_user_test.go -json > ./target/log/mod_user_test$(YMD).log; \
+	go test -v internal/service/s_user_test.go -json > ./target/log/s_user_test$(YMD).log; \
+	go test -v internal/model/mod_category_test.go -json > ./target/log/mod_category_test$(YMD).log; \
+	go test -v internal/service/s_category_test.go -json > ./target/log/s_category_test$(YMD).log; \
+	go test -v internal/model/mod_task_test.go -json > ./target/log/mod_task_test$(YMD).log; \
+	go test -v internal/service/s_task_test.go -json > ./target/log/s_task_test$(YMD).log; \
 	make migrate-test-down; \
 	make clean-logs; \
 	end_time=$$(date +%s); \
@@ -70,6 +70,10 @@ go-test:
 	echo "Total execution time: $${total_duration}s";
 
 go-test-single:
-	$(DOCKER) go test -v internal/service/s_task_test.go;
+	go test -v internal/service/s_task_test.go;
 
-.PHONY: proto grpcui migrate-create migrate-up migrate-down migrate-test-up migrate-test-down clean-logs go-test go-test-single
+go-test-ci:
+	migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" up
+	go test -v -short ./...
+
+.PHONY: proto grpcui migrate-create migrate-up migrate-down migrate-test-up migrate-test-down clean-logs go-test go-test-single go-test-ci
