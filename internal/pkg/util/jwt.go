@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type CustomClaims struct {
 	UserID int `json:"user_id"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func GenerateToken(jwtTTL int, jwtSecretKey string, userID int) (string, error) {
@@ -18,9 +18,9 @@ func GenerateToken(jwtTTL int, jwtSecretKey string, userID int) (string, error) 
 
 	claims := &CustomClaims{
 		userID,
-		jwt.StandardClaims{
-			ExpiresAt: now.Add(ttl).Unix(),
-			IssuedAt:  now.Unix(),
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(now.Add(ttl)),
+			IssuedAt:  jwt.NewNumericDate(now),
 			Issuer:    "go-todolist-grpc",
 		},
 	}
