@@ -45,7 +45,7 @@ git clone https://github.com/Frankie0702111/go-todolist-grpc.git
 ## 2.Set up Docker information, such as database, Redis, Server
 ```bash
 cd go-todolist-grpc
-cp ./app.env.example ./app.env
+cp app.env.example app.env
 
 vim app.env
 vim internal/config/env.go
@@ -65,7 +65,6 @@ docker compose stop
 
 ## 4.Set up basic information, such as database, Redis, AWS, JWT
 ```bash
-cd ./internal/config
 cp ./internal/config/env.go.example ./internal/config/env.go
 vim ./internal/config/env.go
 ```

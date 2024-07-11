@@ -30,11 +30,11 @@ func TestInitSuccess(t *testing.T) {
 		// Local set the SourceHost to "127.0.0.1"
 		// Docker set the SourceHost to "db"
 		opt := &mydb.Option{
-			Host:                     "db",
+			Host:                     config.SourceHost,
 			Port:                     config.SourcePort,
 			Username:                 config.SourceUser,
 			Password:                 config.SourcePassword,
-			DBName:                   config.SourceDataBase,
+			DBName:                   config.TestSourceDataBase,
 			ConnectionMaxLifeTimeSec: &connectionMaxLifeTimeSec,
 			MaxConn:                  &maxConn,
 			MaxIdle:                  &maxIdle,
@@ -65,7 +65,7 @@ func TestInitSuccess(t *testing.T) {
 			Port:                     config.SourcePort,
 			Username:                 config.SourceUser,
 			Password:                 config.SourcePassword,
-			DBName:                   config.SourceDataBase,
+			DBName:                   config.TestSourceDataBase,
 			ConnectionMaxLifeTimeSec: nil,
 			MaxConn:                  nil,
 			MaxIdle:                  nil,
@@ -87,11 +87,11 @@ func TestInitSuccess(t *testing.T) {
 		mock.ExpectPing()
 
 		opt := &mydb.Option{
-			Host:                     "db",
+			Host:                     config.SourceHost,
 			Port:                     "invalidport",
 			Username:                 config.SourceUser,
 			Password:                 config.SourcePassword,
-			DBName:                   config.SourceDataBase,
+			DBName:                   config.TestSourceDataBase,
 			ConnectionMaxLifeTimeSec: nil,
 			MaxConn:                  nil,
 			MaxIdle:                  nil,
@@ -111,11 +111,11 @@ func TestInitSuccess(t *testing.T) {
 		mock.ExpectPing()
 
 		opt := &mydb.Option{
-			Host:                     "db",
+			Host:                     config.SourceHost,
 			Port:                     config.SourcePort,
 			Username:                 "invalid",
 			Password:                 "invalid",
-			DBName:                   config.SourceDataBase,
+			DBName:                   config.TestSourceDataBase,
 			ConnectionMaxLifeTimeSec: nil,
 			MaxConn:                  nil,
 			MaxIdle:                  nil,
@@ -135,7 +135,7 @@ func TestInitSuccess(t *testing.T) {
 		mock.ExpectPing()
 
 		opt := &mydb.Option{
-			Host:                     "db",
+			Host:                     config.SourceHost,
 			Port:                     config.SourcePort,
 			Username:                 config.SourceUser,
 			Password:                 config.SourcePassword,
@@ -163,11 +163,11 @@ func TestGetConn(t *testing.T) {
 		mock.ExpectPing()
 
 		opt := &mydb.Option{
-			Host:                     "db",
+			Host:                     config.SourceHost,
 			Port:                     config.SourcePort,
 			Username:                 config.SourceUser,
 			Password:                 config.SourcePassword,
-			DBName:                   config.SourceDataBase,
+			DBName:                   config.TestSourceDataBase,
 			ConnectionMaxLifeTimeSec: nil,
 			MaxConn:                  nil,
 			MaxIdle:                  nil,
