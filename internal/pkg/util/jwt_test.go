@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,17 +13,17 @@ func TestGenerateToken(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		jwtTTL := 15
 		jwtSecretKey := "mysecretkey"
-		userID := int(123)
+		userID := 123
 
 		token, err := util.GenerateToken(jwtTTL, jwtSecretKey, userID)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, token)
 
 		claims := &util.CustomClaims{}
-		_, _, err = new(jwt.Parser).ParseUnverified(token, claims)
+		_, _, err = jwt.NewParser().ParseUnverified(token, claims)
 		assert.NoError(t, err)
 		assert.Equal(t, userID, claims.UserID)
-		assert.WithinDuration(t, time.Now().Add(time.Minute*time.Duration(jwtTTL)), time.Unix(claims.ExpiresAt, 0), time.Second)
+		assert.WithinDuration(t, time.Now().Add(time.Minute*time.Duration(jwtTTL)), claims.ExpiresAt.Time, time.Second)
 	})
 }
 
@@ -31,7 +31,7 @@ func TestParseToken(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		jwtTTL := 15
 		jwtSecretKey := "mysecretkey"
-		userID := int(123)
+		userID := 123
 
 		token, err := util.GenerateToken(jwtTTL, jwtSecretKey, userID)
 		assert.NoError(t, err)
@@ -39,7 +39,7 @@ func TestParseToken(t *testing.T) {
 		claims, err := util.ParseToken(jwtSecretKey, token)
 		assert.NoError(t, err)
 		assert.Equal(t, userID, claims.UserID)
-		assert.WithinDuration(t, time.Now().Add(time.Minute*time.Duration(jwtTTL)), time.Unix(claims.ExpiresAt, 0), time.Second)
+		assert.WithinDuration(t, time.Now().Add(time.Minute*time.Duration(jwtTTL)), claims.ExpiresAt.Time, time.Second)
 	})
 
 	t.Run("Failure_InvalidToken", func(t *testing.T) {
