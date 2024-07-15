@@ -16,55 +16,56 @@ import (
 )
 
 func TestInitSuccess(t *testing.T) {
-	t.Run("Success_AWS", func(t *testing.T) {
-		certPath := mydb.GetRootCertPath()
-		if _, err := os.Stat(certPath); os.IsNotExist(err) {
-			t.Skip("Skipping AWS test: RDS certificate file not found")
-		}
+	// Performing this unit test may result in the exposure of AWS user information, which is only open to the local.
+	// t.Run("Success_AWS", func(t *testing.T) {
+	// 	certPath := mydb.GetRootCertPath()
+	// 	if _, err := os.Stat(certPath); os.IsNotExist(err) {
+	// 		t.Skip("Skipping AWS test: RDS certificate file not found")
+	// 	}
 
-		connectionMaxLifeTimeSec := config.SourceDBConnMaxLTSec
-		maxConn := config.SourceMaxConn
-		maxIdle := config.SourceMaxIdle
-		log.Init(config.LogLevel, config.LogFolderPath, strconv.Itoa(os.Getpid()), config.EnableConsoleOutput, config.EnableFileOutput)
+	// 	connectionMaxLifeTimeSec := config.SourceDBConnMaxLTSec
+	// 	maxConn := config.SourceMaxConn
+	// 	maxIdle := config.SourceMaxIdle
+	// 	log.Init(config.LogLevel, config.LogFolderPath, strconv.Itoa(os.Getpid()), config.EnableConsoleOutput, config.EnableFileOutput)
 
-		db, mock, err := sqlmock.New()
-		if err != nil {
-			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-		}
-		defer db.Close()
+	// 	db, mock, err := sqlmock.New()
+	// 	if err != nil {
+	// 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	// 	}
+	// 	defer db.Close()
 
-		mock.ExpectPing()
+	// 	mock.ExpectPing()
 
-		// Simulate the SSL query
-		rows := sqlmock.NewRows([]string{"ssl_is_used"}).AddRow(true)
-		mock.ExpectQuery("SELECT ssl_is_used()").WillReturnRows(rows)
+	// 	// Simulate the SSL query
+	// 	rows := sqlmock.NewRows([]string{"ssl_is_used"}).AddRow(true)
+	// 	mock.ExpectQuery("SELECT ssl_is_used()").WillReturnRows(rows)
 
-		opt := &mydb.Option{
-			Host:                     config.AWSSourceHost,
-			Port:                     config.SourcePort,
-			Username:                 config.AWSSourceUser,
-			Password:                 config.AWSSourcePassword,
-			DBName:                   config.AWSSourceDataBase,
-			SSLMode:                  config.AWSSourceSSLMode,
-			ConnectionMaxLifeTimeSec: &connectionMaxLifeTimeSec,
-			MaxConn:                  &maxConn,
-			MaxIdle:                  &maxIdle,
-		}
+	// 	opt := &mydb.Option{
+	// 		Host:                     config.AWSSourceHost,
+	// 		Port:                     config.SourcePort,
+	// 		Username:                 config.AWSSourceUser,
+	// 		Password:                 config.AWSSourcePassword,
+	// 		DBName:                   config.AWSSourceDataBase,
+	// 		SSLMode:                  config.AWSSourceSSLMode,
+	// 		ConnectionMaxLifeTimeSec: &connectionMaxLifeTimeSec,
+	// 		MaxConn:                  &maxConn,
+	// 		MaxIdle:                  &maxIdle,
+	// 	}
 
-		err = mydb.Init(opt)
-		assert.NoError(t, err)
+	// 	err = mydb.Init(opt)
+	// 	assert.NoError(t, err)
 
-		// Checking the SSL status
-		var sslUsed bool
-		err = db.QueryRow("SELECT ssl_is_used()").Scan(&sslUsed)
-		assert.NoError(t, err)
-		assert.True(t, sslUsed, "SSL should be used")
+	// 	// Checking the SSL status
+	// 	var sslUsed bool
+	// 	err = db.QueryRow("SELECT ssl_is_used()").Scan(&sslUsed)
+	// 	assert.NoError(t, err)
+	// 	assert.True(t, sslUsed, "SSL should be used")
 
-		// We make sure that all expectations were met
-		if err := mock.ExpectationsWereMet(); err != nil {
-			t.Errorf("there were unfulfilled expectations: %s", err)
-		}
-	})
+	// 	// We make sure that all expectations were met
+	// 	if err := mock.ExpectationsWereMet(); err != nil {
+	// 		t.Errorf("there were unfulfilled expectations: %s", err)
+	// 	}
+	// })
 
 	t.Run("Success_General", func(t *testing.T) {
 		connectionMaxLifeTimeSec := config.SourceDBConnMaxLTSec
