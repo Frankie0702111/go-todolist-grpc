@@ -19,6 +19,7 @@ type Config struct {
 	DBUser                     string `mapstructure:"DB_USER"`
 	DBPassword                 string `mapstructure:"DB_PASS"`
 	DBName                     string `mapstructure:"DB_NAME"`
+	SSLMode                    string `mapstructure:"SSL_MODE"`
 	DBConnectionMaxLifeTimeSec *int   `mapstructure:"DB_CONN_MAX_LT_SEC"`
 	DBMaxConnection            *int   `mapstructure:"DB_MAX_CONN"`
 	DBMaxIdle                  *int   `mapstructure:"DB_MAX_IDLE"`
