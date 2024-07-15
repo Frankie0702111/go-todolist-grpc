@@ -117,6 +117,23 @@ func ResetConn() {
 }
 
 func getRootCertPath() string {
+	// For CI to run the unit tests.
+	if certContent := os.Getenv("RDS_CA_CERT"); certContent != "" {
+		tempDir, err := os.MkdirTemp("", "rds-cert")
+		if err != nil {
+			log.Error.Printf("Failed to create temp directory: %v", err)
+			return ""
+		}
+
+		tempFile := filepath.Join(tempDir, "rds-ca-2019-root.pem")
+		if err := os.WriteFile(tempFile, []byte(certContent), 0600); err != nil {
+			log.Error.Printf("Failed to write cert content: %v", err)
+			return ""
+		}
+
+		return tempFile
+	}
+
 	_, b, _, _ := runtime.Caller(0)
 	basepath := filepath.Dir(b)
 	return filepath.Join(basepath, "..", "..", "config", "certs", "rds-ca-2019-root.pem")
