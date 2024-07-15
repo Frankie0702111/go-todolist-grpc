@@ -17,12 +17,13 @@ var sqlDBUser *sql.DB
 var sqlTxUser *sql.Tx
 
 func setUpModUser() {
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s application_name=otter sslmode=disable timezone=UTC",
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s timezone=UTC",
 		config.SourceHost,
 		config.SourcePort,
 		config.SourceUser,
 		config.SourcePassword,
-		config.TestSourceDataBase,
+		config.SourceDataBase,
+		config.SourceSSLMode,
 	)
 
 	db, err := sql.Open("postgres", psqlInfo)

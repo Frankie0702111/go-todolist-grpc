@@ -42,7 +42,7 @@ This is a To-Do List project implemented using Go language and gRPC.
 git clone https://github.com/Frankie0702111/go-todolist-grpc.git
 ```
 
-## 2.Set up Docker information, such as database, Redis, Server
+## 2.Set up Docker information, such as database, gRPC server, gateway server...
 ```bash
 cd go-todolist-grpc
 cp app.env.example app.env
@@ -63,13 +63,22 @@ docker compose up -d
 docker compose stop
 ```
 
-## 4.Set up basic information, such as database, Redis, AWS, JWT
+## 4.Set up the testing information, such as database, AWS, JWT...
 ```bash
 cp ./internal/config/env.go.example ./internal/config/env.go
 vim ./internal/config/env.go
 ```
 
-## 5.Generate db migrations
+## 5.Download the AWS-RDS certificates
+- **Documents**
+    - [Using SSL/TLS to encrypt a connection to a DB instance or cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+
+- **1.Choosing the correct AWS region**
+    - [Download certificate bundles for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions)
+- **2.Changing the .pem file name (name: rds-ca-2019-root.pem)**
+- **3.Move the rds-ca-2019-root.pem file to internal/config/certs**
+
+## 6.Generate db migrations
 ```bash
 # Up all migration
 make migrate-up
@@ -80,6 +89,18 @@ make migrate-down
 # Specify batch up or down (default = 3 -> user, category, task)
 make migrate-up number=1
 make migrate-down number=1
+```
+
+## 7.Create the DB Extensions(Options)
+[Reference: Determining the SSL connection status](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/PostgreSQL.Concepts.General.SSL.html#PostgreSQL.Concepts.General.SSL.Status)
+```sql
+CREATE EXTENSION sslinfo;
+
+SELECT ssl_is_used();
+ssl_is_used
+---------
+t
+(1 row)
 ```
 
 # Folder structure

@@ -50,6 +50,7 @@ func main() {
 		Username:                 cnf.DBUser,
 		Password:                 cnf.DBPassword,
 		DBName:                   cnf.DBName,
+		SSLMode:                  cnf.SSLMode,
 		ConnectionMaxLifeTimeSec: cnf.DBConnectionMaxLifeTimeSec,
 		MaxConn:                  cnf.DBMaxConnection,
 		MaxIdle:                  cnf.DBMaxIdle,

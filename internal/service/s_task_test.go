@@ -30,7 +30,8 @@ func setUpTask() error {
 	mockConfigContent.WriteString("DB_PORT=" + config.SourcePort + "\n")
 	mockConfigContent.WriteString("DB_USER=" + config.SourceUser + "\n")
 	mockConfigContent.WriteString("DB_PASS=" + config.SourcePassword + "\n")
-	mockConfigContent.WriteString("DB_NAME=" + config.TestSourceDataBase + "\n")
+	mockConfigContent.WriteString("DB_NAME=" + config.SourceDataBase + "\n")
+	mockConfigContent.WriteString("SSL_MODE=" + config.SourceSSLMode + "\n")
 	mockConfigContent.WriteString("DB_CONN_MAX_LT_SEC=" + strconv.Itoa(config.SourceDBConnMaxLTSec) + "\n")
 	mockConfigContent.WriteString("DB_MAX_CONN=" + strconv.Itoa(config.SourceMaxConn) + "\n")
 	mockConfigContent.WriteString("DB_MAX_IDLE=" + strconv.Itoa(config.SourceMaxIdle) + "\n")
@@ -66,7 +67,8 @@ func setUpTask() error {
 		Port:     config.SourcePort,
 		Username: config.SourceUser,
 		Password: config.SourcePassword,
-		DBName:   config.TestSourceDataBase,
+		DBName:   config.SourceDataBase,
+		SSLMode:  config.SourceSSLMode,
 	}
 
 	err = db.Init(opt)

@@ -1,6 +1,8 @@
 include app.env
 
 DOCKER = docker compose exec server
+DOCKER_HOST=db
+TEST_DB=test_db
 YMD = _$$(date +'%Y%m%d')
 number?=3
 table :=
@@ -21,19 +23,19 @@ migrate-create:
 
 # make migrate-up number=x
 migrate-up:
-		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" up $(number)
+		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=verify-full&sslrootcert=./internal/config/certs/rds-ca-2019-root.pem" up $(number)
 
 # make migrate-down number=x
 migrate-down:
-		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" down $(number)
+		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=verify-full&sslrootcert=./internal/config/certs/rds-ca-2019-root.pem" down $(number)
 
 # make migrate-test-up number=x
 migrate-test-up:
-		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" up $(number)
+		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://root:root@$(DOCKER_HOST):$(DB_PORT)/$(TEST_DB)?sslmode=disable" up $(number)
 
 # make migrate-test-down number=x
 migrate-test-down:
-		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" down $(number)
+		$(DOCKER) migrate -path ./internal/migrations -database "$(DB)://root:root@$(DOCKER_HOST):$(DB_PORT)/$(TEST_DB)?sslmode=disable" down $(number)
 
 clean-logs:
 	@echo "Cleaning log directories..."
@@ -75,7 +77,7 @@ go-test-single:
 go-test-ci:
 	@set -e; \
 	start_time=$$(date +%s); \
-	migrate -path ./internal/migrations -database "$(DB)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/test_db?sslmode=disable" up; \
+	migrate -path ./internal/migrations -database "$(DB)://root:root@127.0.0.1:$(DB_PORT)/$(TEST_DB)?sslmode=disable" up; \
 	go test -v -short ./...; \
 	end_time=$$(date +%s); \
 	total_duration=$$((end_time - start_time)); \

@@ -17,10 +17,11 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-internal/config/env.go
-app.env
-target/
 *.DS_Store
+target/
+app.env
+internal/config/env.go
+internal/config/certs/*.pem
 
 # Go workspace file
 go.work
