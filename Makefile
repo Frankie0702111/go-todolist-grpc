@@ -8,6 +8,10 @@ number?=3
 table :=
 LOG_DIRS := internal/pkg/db/target internal/service/target
 
+# Generate a secret key for the JWT token
+jwt-secret-key:
+	openssl rand -hex 64 | head -c 32
+
 proto:
 		protoc --proto_path=api/proto --go_out=api/pb --go_opt=paths=source_relative \
 		--go-grpc_out=api/pb --go-grpc_opt=paths=source_relative \
@@ -83,4 +87,4 @@ go-test-ci:
 	total_duration=$$((end_time - start_time)); \
 	echo "Total execution time: $${total_duration}s";
 
-.PHONY: proto grpcui migrate-create migrate-up migrate-down migrate-test-up migrate-test-down clean-logs go-test go-test-single go-test-ci
+.PHONY: jwt-secret-key proto grpcui migrate-create migrate-up migrate-down migrate-test-up migrate-test-down clean-logs go-test go-test-single go-test-ci
