@@ -4,6 +4,9 @@ on:
   push:
     branches: [ master ]
 
+env:
+  AWS_REGION: ap-northeast-1
+
 jobs:
   depeloy:
     name: Deploy to todolist-gRPC service
@@ -22,22 +25,36 @@ jobs:
         echo "build-time=$(TZ=Asia/Taipei date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_OUTPUT
         echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-    # - name: Configure AWS credentials
-    #   uses: aws-actions/configure-aws-credentials@v1
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     aws-region: ap-northeast-1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
-    # - name: Login to Amazon ECR
-    #   id: login-ecr
-    #   uses: aws-actions/amazon-ecr-login@v2
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
 
-    # - name: Build, tag, and push docker image to Amazon ECR
-    #   env:
-    #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     REPOSITORY: go-todolist-grpc
-    #     IMAGE_TAG: ${{ github.sha }}
-    #   run: |
-    #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-    #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+    - name: Load secrets and save to app.env
+      run: aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
+
+    - name: Build, tag, and push docker image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: go-todolist-grpc
+        IMAGE_TAG: ${{ github.sha }}
+        BUILD_VERSION: ${{ steps.custome-var.outputs.tag-name }}
+        COMMIT_HASH: ${{ steps.custome-var.outputs.short-sha }}
+        BUILD_TIME: ${{ steps.custome-var.outputs.build-time }}
+        BRANCH: ${{ steps.custome-var.outputs.branch }}
+      run: |
+        docker build \
+          --build-arg BUILD_VERSION="$BUILD_VERSION" \
+          --build-arg COMMIT_HASH="$COMMIT_HASH" \
+          --build-arg BUILD_TIME="$BUILD_TIME" \
+          --build-arg BRANCH="$BRANCH" \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$BUILD_VERSION" >> $GITHUB_OUTPUT
