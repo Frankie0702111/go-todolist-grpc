@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-todolist-grpc-ingress-http
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "api.frankie-go-example.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: go-todolist-grpc-api-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - api.frankie-go-example.com
+    secretName: go-todolist-grpc-api-cert

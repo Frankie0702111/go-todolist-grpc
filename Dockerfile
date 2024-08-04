@@ -12,4 +12,6 @@ WORKDIR /app
 COPY --from=builder /app/target .
 RUN apk add logrotate tzdata
 COPY --from=builder /app/init/logrotate.d/go-todolist-grpc /etc/logrotate.d/go-todolist-grpc
+
+EXPOSE 7531 8642
 CMD crond && ./go-todolist-grpc

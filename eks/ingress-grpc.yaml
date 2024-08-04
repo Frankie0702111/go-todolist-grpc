@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-todolist-grpc-ingress-grpc
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "gapi.frankie-go-example.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: go-todolist-grpc-api-service
+            port:
+              number: 90
+  tls:
+  - hosts:
+    - gapi.frankie-go-example.com
+    secretName: go-todolist-grpc-gapi-cert
