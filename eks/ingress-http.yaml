@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "api.frankie-go-example.com"
+  - host: api.frankie-go-example.com
     http:
       paths:
       - pathType: Prefix

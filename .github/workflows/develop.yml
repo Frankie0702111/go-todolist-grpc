@@ -66,7 +66,7 @@ jobs:
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$BUILD_VERSION" >> $GITHUB_OUTPUT
       
     - name: Update kube config
-      run: aws eks update-kubeconfig --name go-todolist-grpc --region ap-northeast-1
+      run: aws eks update-kubeconfig --name go-todolist-grpc-eks --region ap-northeast-1
 
     - name: Deploy image to Amazon EKS
       run: |
