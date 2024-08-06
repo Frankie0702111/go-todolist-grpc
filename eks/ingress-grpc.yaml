@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "gapi.frankie-go-example.com"
+  - host: gapi.frankie-go-example.com
     http:
       paths:
       - pathType: Prefix
