@@ -11,9 +11,10 @@ message Response {
         User user = 1;
         Category category = 2;
         Task task = 3;
+        VerifyEmail verifyEmail = 4;
     };
-    int32 status = 4;
-    string message = 5;
+    int32 status = 5;
+    string message = 6;
 }
 
 message ListResponse {
@@ -34,4 +35,8 @@ message Categories {
 
 message Tasks {
     repeated Task data = 1;
+}
+
+message VerifyEmails {
+    repeated VerifyEmail data = 1;
 }

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"go-todolist-grpc/api/pb"
+	"go-todolist-grpc/internal/service/queue"
 	"reflect"
 	"strings"
 
@@ -11,6 +12,13 @@ import (
 
 type Server struct {
 	pb.UnimplementedToDoListServer
+	taskDistributor queue.TaskDistributor
+}
+
+func NewServer(taskDistributor queue.TaskDistributor) *Server {
+	return &Server{
+		taskDistributor: taskDistributor,
+	}
 }
 
 type ReqId struct {
@@ -98,8 +106,4 @@ func ParseSortBy(str string) map[string]bool {
 	}
 
 	return rtn
-}
-
-func Pointer[T any](value T) *T {
-	return &value
 }

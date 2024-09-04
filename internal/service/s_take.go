@@ -42,7 +42,7 @@ func (ins ReqCreateTask) toFieldValues() model.TaskFieldValues {
 	var t *time.Time
 	isSpecifyTime := false
 	if ins.SpecifyDatetime != nil {
-		t = Pointer(time.Unix(*ins.SpecifyDatetime/1000, 0))
+		t = util.Pointer(time.Unix(*ins.SpecifyDatetime/1000, 0))
 		isSpecifyTime = true
 	}
 	fv.SpecifyDatetime = model.GiveColNullTime(t)
@@ -284,7 +284,7 @@ func (ins ReqUpdateTask) toFieldValues() (model.TaskFieldValues, bool) {
 	isSpecifyTime := false
 	if ins.SpecifyDatetime != nil {
 		requiredCheck = true
-		t = Pointer(time.Unix(*ins.SpecifyDatetime/1000, 0))
+		t = util.Pointer(time.Unix(*ins.SpecifyDatetime/1000, 0))
 		isSpecifyTime = true
 	}
 	fv.SpecifyDatetime = model.GiveColNullTime(t)

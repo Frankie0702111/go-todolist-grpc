@@ -21,4 +21,5 @@ message UpdateUserRequest {
     int32 user_id = 1;
     optional string username = 2;
     optional string password = 3;
+    optional bool is_email_verified = 4;
 }

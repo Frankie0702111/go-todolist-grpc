@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -45,5 +46,5 @@ func ParseToken(jwtSecretKey string, tokenStr string) (*CustomClaims, error) {
 		return claims, nil
 	}
 
-	return nil, fmt.Errorf("invalid token")
+	return nil, errors.New("invalid token")
 }

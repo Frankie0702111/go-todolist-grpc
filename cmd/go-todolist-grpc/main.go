@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go-todolist-grpc/api/pb"
 	"go-todolist-grpc/internal/config"
 	"go-todolist-grpc/internal/middleware"
 	"go-todolist-grpc/internal/pkg/db"
 	"go-todolist-grpc/internal/pkg/log"
 	"go-todolist-grpc/internal/service"
+	"go-todolist-grpc/internal/service/queue"
 	logger "log"
 	"net"
 	"net/http"
@@ -19,6 +21,7 @@ import (
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/hibiken/asynq"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -62,16 +65,25 @@ func main() {
 	dbConn := db.GetConn()
 	defer dbConn.Close()
 
+	// Init Redis queue
+	redisOpt := asynq.RedisClientOpt{
+		Addr: fmt.Sprintf("redis:%s", cnf.RedisPort),
+	}
+	taskDistributor := queue.NewRedisTaskDistributor(redisOpt)
+
 	// Create a context that listens for the interrupt signal from the OS.
 	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
 	defer stop()
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
+	// Init Redis queue
+	runTaskProcessor(redisOpt, ctx, waitGroup)
+
 	// Init Http server
-	runGatewayServer(cnf, ctx, waitGroup)
+	runGatewayServer(cnf, ctx, waitGroup, taskDistributor)
 
 	// Init gRPC server
-	runGrpcServer(cnf, ctx, waitGroup)
+	runGrpcServer(cnf, ctx, waitGroup, taskDistributor)
 
 	err := waitGroup.Wait()
 	if err != nil {
@@ -79,13 +91,33 @@ func main() {
 	}
 }
 
-func runGrpcServer(cnf *config.Config, ctx context.Context, waitGroup *errgroup.Group) {
+func runTaskProcessor(redisOpt asynq.RedisClientOpt, ctx context.Context, waitGroup *errgroup.Group) {
+	taskProcessor := queue.NewRedisTaskProcessor(redisOpt)
+	log.Info.Print("start task processor")
+
+	err := taskProcessor.Start()
+	if err != nil {
+		log.Error.Printf("failed to start task processor: %v", err)
+	}
+
+	waitGroup.Go(func() error {
+		<-ctx.Done()
+		log.Info.Println("graceful shutdown task processor")
+
+		taskProcessor.Shutdown()
+		log.Info.Println("task processor is stopped")
+
+		return nil
+	})
+}
+
+func runGrpcServer(cnf *config.Config, ctx context.Context, waitGroup *errgroup.Group, taskDistributor queue.TaskDistributor) {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			middleware.VerifyTokenByGrpc(cnf),
 		)),
 	)
-	pb.RegisterToDoListServer(grpcServer, &service.Server{})
+	pb.RegisterToDoListServer(grpcServer, service.NewServer(taskDistributor))
 	reflection.Register(grpcServer)
 
 	listener, err := net.Listen("tcp", ":"+cnf.GprcServerPort)
@@ -117,7 +149,7 @@ func runGrpcServer(cnf *config.Config, ctx context.Context, waitGroup *errgroup.
 	})
 }
 
-func runGatewayServer(cnf *config.Config, ctx context.Context, waitGroup *errgroup.Group) {
+func runGatewayServer(cnf *config.Config, ctx context.Context, waitGroup *errgroup.Group, taskDistributor queue.TaskDistributor) {
 	jsonOption := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 		MarshalOptions: protojson.MarshalOptions{
 			UseProtoNames: true,
@@ -137,7 +169,7 @@ func runGatewayServer(cnf *config.Config, ctx context.Context, waitGroup *errgro
 	})
 
 	grpcMux := runtime.NewServeMux(jsonOption, option)
-	if err := pb.RegisterToDoListHandlerServer(ctx, grpcMux, &service.Server{}); err != nil {
+	if err := pb.RegisterToDoListHandlerServer(ctx, grpcMux, service.NewServer(taskDistributor)); err != nil {
 		log.Error.Printf("cannot register handler server: %v", err)
 	}
 

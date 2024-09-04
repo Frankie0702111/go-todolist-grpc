@@ -53,7 +53,7 @@ func createTask(userId, categoryId int) (*model.TaskFieldValues, error) {
 		Title:           model.GiveColString(util.RandomString(10)),
 		Note:            model.GiveColString(util.RandomString(20)),
 		Url:             model.GiveColString("http://example.com/" + util.RandomString(3)),
-		SpecifyDatetime: model.GiveColNullTime(service.Pointer(now.Add(24 * time.Hour))),
+		SpecifyDatetime: model.GiveColNullTime(util.Pointer(now.Add(24 * time.Hour))),
 		IsSpecifyTime:   model.GiveColBool(true),
 		Priority:        model.GiveColInt(util.RandomInt(1, 3)),
 		IsComplete:      model.GiveColBool(util.RandomBool()),
@@ -72,12 +72,13 @@ func createTestUserForTask(email, username, password string) (*model.UserFieldVa
 
 	now := time.Now().UTC()
 	userValues := &model.UserFieldValues{
-		Email:     model.GiveColString(email),
-		Username:  model.GiveColString(username),
-		Password:  model.GiveColString(hashPassword),
-		Status:    model.GiveColBool(true),
-		CreatedAt: model.GiveColTime(now),
-		UpdatedAt: model.GiveColTime(now),
+		Email:           model.GiveColString(email),
+		Username:        model.GiveColString(username),
+		Password:        model.GiveColString(hashPassword),
+		Status:          model.GiveColBool(true),
+		CreatedAt:       model.GiveColTime(now),
+		UpdatedAt:       model.GiveColTime(now),
+		IsEmailVerified: model.GiveColBool(true),
 	}
 
 	return model.CreateUser(sqlDBTask, userValues)

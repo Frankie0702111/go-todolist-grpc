@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "go-todolist-grpc/api/pb";
+
+message VerifyEmailRequest {
+    int32 id = 1;
+    string secret_code = 2;
+}
+ 

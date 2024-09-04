@@ -48,6 +48,17 @@ services:
     networks:
       - todolist_grpc_network
 
+  redis:
+    image: redis:7.4.0-alpine
+    container_name: grpc-redis
+    ports:
+      - target: 6379
+        published: ${REDIS_PORT:-6379}
+        protocol: tcp
+        mode: host
+    networks:
+      - todolist_grpc_network
+
 networks:
   todolist_grpc_network:
     driver: bridge
