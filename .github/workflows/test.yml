@@ -47,12 +47,12 @@ jobs:
         cp ./app.env.example ./app.env
         cp ./internal/config/env.go.example ./internal/config/env.go
 
-    - name: Set up SSL certificate
-      run: |
-        mkdir -p internal/config/certs
-        echo "${{ secrets.RDS_CA_CERT }}" > internal/config/certs/rds-ca-2019-root.pem
+    # - name: Set up SSL certificate
+    #   run: |
+    #     mkdir -p internal/config/certs
+    #     echo "${{ secrets.RDS_CA_CERT }}" > internal/config/certs/rds-ca-2019-root.pem
   
     - name: Run tests
-      env:
-        RDS_CA_CERT: ${{ secrets.RDS_CA_CERT }}
+      # env:
+      #   RDS_CA_CERT: ${{ secrets.RDS_CA_CERT }}
       run: make go-test-ci
