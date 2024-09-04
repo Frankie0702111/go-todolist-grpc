@@ -10,19 +10,27 @@ import (
 	"go-todolist-grpc/internal/pkg/log"
 	"go-todolist-grpc/internal/pkg/util"
 	"go-todolist-grpc/internal/service"
+	"go-todolist-grpc/internal/service/queue"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
 
+	"github.com/hibiken/asynq"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
-func setUpTask() error {
+type mockTaskDistributorByTask struct{}
+
+func (m *mockTaskDistributorByTask) DistributeTaskSendVerifyEmail(ctx context.Context, payload *queue.PayloadSendVerifyEmail, opts ...asynq.Option) error {
+	return nil
+}
+
+func setUpTask() (*service.Server, error) {
 	var mockConfigContent bytes.Buffer
 	mockConfigContent.WriteString("HTTP_SERVER_PORT=" + config.HttpPort + "\n")
 	mockConfigContent.WriteString("GRPC_SERVER_PORT=" + config.GrpcPort + "\n")
@@ -49,13 +57,13 @@ func setUpTask() error {
 	err := os.WriteFile(mockConfigFile, mockConfigContent.Bytes(), 0644)
 	defer os.Remove(mockConfigFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Init config
 	loadErr := config.Load()
 	if loadErr != nil {
-		return loadErr
+		return nil, loadErr
 	}
 
 	// Init log
@@ -73,10 +81,13 @@ func setUpTask() error {
 
 	err = db.Init(opt)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	mockDistributor := &mockTaskDistributorByTask{}
+	s := service.NewServer(mockDistributor)
+
+	return s, nil
 }
 
 func createAuthenticatedContext(id int) context.Context {
@@ -98,10 +109,8 @@ type setUpTaskInfo struct {
 }
 
 func createUserAndCategory(t *testing.T) *setUpTaskInfo {
-	err := setUpTask()
+	s, err := setUpTask()
 	assert.NoError(t, err)
-
-	s := &service.Server{}
 
 	// Register a user
 	rReq := &pb.RegisterUserRequest{
@@ -111,6 +120,14 @@ func createUserAndCategory(t *testing.T) *setUpTaskInfo {
 	}
 	rRes, err := s.RegisterUser(context.Background(), rReq)
 	assert.Nil(t, err)
+
+	isEmailVerified := true
+	uReq := &pb.UpdateUserRequest{
+		UserId:          rRes.GetUser().Id,
+		IsEmailVerified: &isEmailVerified,
+	}
+	_, uErr := s.UpdateUser(context.Background(), uReq)
+	assert.Nil(t, uErr)
 
 	// Create authenticated context
 	ctx := createAuthenticatedContext(int(rRes.GetUser().Id))

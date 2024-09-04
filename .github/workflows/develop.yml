@@ -16,11 +16,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
     
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v4
-      with:
-         version: 'v1.30.3'
-      id: install
+    # - name: Install kubectl
+    #   uses: azure/setup-kubectl@v4
+    #   with:
+    #      version: 'v1.30.3'
+    #   id: install
 
     - name: Get custom info
       id: custome-var
@@ -31,49 +31,49 @@ jobs:
         echo "build-time=$(TZ=Asia/Taipei date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_OUTPUT
         echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+    # - name: Login to Amazon ECR
+    #   id: login-ecr
+    #   uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Load secrets and save to app.env
-      run: aws secretsmanager get-secret-value --secret-id go-todolist-grpc --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
+    # - name: Load secrets and save to app.env
+    #   run: aws secretsmanager get-secret-value --secret-id go-todolist-grpc --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
 
-    - name: Build, tag, and push docker image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: go-todolist-grpc
-        IMAGE_TAG: ${{ github.sha }}
-        BUILD_VERSION: ${{ steps.custome-var.outputs.tag-name }}
-        COMMIT_HASH: ${{ steps.custome-var.outputs.short-sha }}
-        BUILD_TIME: ${{ steps.custome-var.outputs.build-time }}
-        BRANCH: ${{ steps.custome-var.outputs.branch }}
-      run: |
-        docker build \
-          --build-arg BUILD_VERSION="$BUILD_VERSION" \
-          --build-arg COMMIT_HASH="$COMMIT_HASH" \
-          --build-arg BUILD_TIME="$BUILD_TIME" \
-          --build-arg BRANCH="$BRANCH" \
-          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$BUILD_VERSION" >> $GITHUB_OUTPUT
+    # - name: Build, tag, and push docker image to Amazon ECR
+    #   id: build-image
+    #   env:
+    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #     ECR_REPOSITORY: go-todolist-grpc
+    #     IMAGE_TAG: ${{ github.sha }}
+    #     BUILD_VERSION: ${{ steps.custome-var.outputs.tag-name }}
+    #     COMMIT_HASH: ${{ steps.custome-var.outputs.short-sha }}
+    #     BUILD_TIME: ${{ steps.custome-var.outputs.build-time }}
+    #     BRANCH: ${{ steps.custome-var.outputs.branch }}
+    #   run: |
+    #     docker build \
+    #       --build-arg BUILD_VERSION="$BUILD_VERSION" \
+    #       --build-arg COMMIT_HASH="$COMMIT_HASH" \
+    #       --build-arg BUILD_TIME="$BUILD_TIME" \
+    #       --build-arg BRANCH="$BRANCH" \
+    #       -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+    #     docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+    #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$BUILD_VERSION" >> $GITHUB_OUTPUT
       
-    - name: Update kube config
-      run: aws eks update-kubeconfig --name go-todolist-grpc-eks --region ap-northeast-1
+    # - name: Update kube config
+    #   run: aws eks update-kubeconfig --name go-todolist-grpc-eks --region ap-northeast-1
 
-    - name: Deploy image to Amazon EKS
-      run: |
-        kubectl apply -f eks/aws-auth.yaml
-        kubectl apply -f eks/deployment.yaml
-        kubectl apply -f eks/service.yaml
-        kubectl apply -f eks/issuer.yaml
-        kubectl apply -f eks/ingress-nginx.yaml
-        kubectl apply -f eks/ingress-http.yaml
-        kubectl apply -f eks/ingress-grpc.yaml
+    # - name: Deploy image to Amazon EKS
+    #   run: |
+    #     kubectl apply -f eks/aws-auth.yaml
+    #     kubectl apply -f eks/deployment.yaml
+    #     kubectl apply -f eks/service.yaml
+    #     kubectl apply -f eks/issuer.yaml
+    #     kubectl apply -f eks/ingress-nginx.yaml
+    #     kubectl apply -f eks/ingress-http.yaml
+    #     kubectl apply -f eks/ingress-grpc.yaml

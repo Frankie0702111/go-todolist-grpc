@@ -8,9 +8,11 @@ import (
 	"go-todolist-grpc/internal/pkg/db"
 	"go-todolist-grpc/internal/pkg/log"
 	"go-todolist-grpc/internal/pkg/util"
+	"go-todolist-grpc/internal/service/queue"
 	"net/http"
 	"time"
 
+	"github.com/hibiken/asynq"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -72,6 +74,24 @@ func (s *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) 
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", userErr)
 	}
 
+	// Define options for the asynq
+	opts := []asynq.Option{
+		asynq.MaxRetry(3),
+		asynq.ProcessIn(5 * time.Second),
+		asynq.Queue(queue.QueueSendMail),
+	}
+
+	// Distribute the task to send a verification email
+	taskPayload := &queue.PayloadSendVerifyEmail{
+		UserId: user.ID.Val,
+	}
+
+	sendEmailErr := s.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
+	if sendEmailErr != nil {
+		log.Error.Printf("failed to distribute task to send verify email: %v", sendEmailErr)
+		return nil, status.Errorf(codes.Internal, "failed to distribute task to send verify email: %v", sendEmailErr)
+	}
+
 	comErr := tx.Commit()
 	if comErr != nil {
 		log.Error.Printf("failed to create user from db tx: %v", comErr)
@@ -116,6 +136,10 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 		return nil, status.Errorf(codes.NotFound, "this email is unregistered")
 	}
 
+	if !getUser.IsEmailVerified {
+		return nil, status.Errorf(codes.PermissionDenied, "this email has not been verified yet")
+	}
+
 	// Check user password
 	if checkPassword := util.CheckPasswordHash(reqLogin.Password, getUser.Password); !checkPassword {
 		return nil, status.Errorf(codes.InvalidArgument, "password is incorrect")
@@ -145,9 +169,10 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Response,
 }
 
 type ReqUpdateUser struct {
-	UserId   int32   `json:"user_id" validate:"required"`
-	Username *string `json:"username" validate:"omitempty,min=3,max=32"`
-	Password *string `json:"password" validate:"omitempty,min=8"`
+	UserId          int32   `json:"user_id" validate:"required"`
+	Username        *string `json:"username" validate:"omitempty,min=3,max=32"`
+	Password        *string `json:"password" validate:"omitempty,min=8"`
+	IsEmailVerified *bool   `json:"is_email_verified" validate:"omitempty"`
 }
 
 func (ins ReqUpdateUser) toFieldValues() (model.UserFieldValues, bool) {
@@ -163,6 +188,11 @@ func (ins ReqUpdateUser) toFieldValues() (model.UserFieldValues, bool) {
 	if ins.Password != nil {
 		requiredCheck = true
 		fv.Password = model.GiveColString(*ins.Password)
+	}
+
+	if ins.IsEmailVerified != nil {
+		requiredCheck = true
+		fv.IsEmailVerified = model.GiveColBool(*ins.IsEmailVerified)
 	}
 
 	return fv, requiredCheck
@@ -213,8 +243,8 @@ func (s *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb
 
 		comErr := tx.Commit()
 		if comErr != nil {
-			log.Error.Printf("failed to create user from db tx: %v", comErr)
-			return nil, status.Errorf(codes.Internal, "failed to create user from db tx: %v", comErr)
+			log.Error.Printf("failed to update user from db tx: %v", comErr)
+			return nil, status.Errorf(codes.Internal, "failed to update user from db tx: %v", comErr)
 		}
 
 		return &pb.Response{

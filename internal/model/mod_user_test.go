@@ -52,12 +52,13 @@ func createTestUser(email, username, password string) (*model.UserFieldValues, e
 
 	now := time.Now().UTC()
 	userValues := &model.UserFieldValues{
-		Email:     model.GiveColString(email),
-		Username:  model.GiveColString(username),
-		Password:  model.GiveColString(hashPassword),
-		Status:    model.GiveColBool(true),
-		CreatedAt: model.GiveColTime(now),
-		UpdatedAt: model.GiveColTime(now),
+		Email:           model.GiveColString(email),
+		Username:        model.GiveColString(username),
+		Password:        model.GiveColString(hashPassword),
+		Status:          model.GiveColBool(true),
+		CreatedAt:       model.GiveColTime(now),
+		UpdatedAt:       model.GiveColTime(now),
+		IsEmailVerified: model.GiveColBool(true),
 	}
 
 	return model.CreateUser(sqlDBUser, userValues)

@@ -4,6 +4,7 @@ import (
 	"crypto/x509"
 	"database/sql"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"go-todolist-grpc/internal/pkg/log"
 	"os"
@@ -151,7 +152,7 @@ func verifyCertificate(certPath string) error {
 
 	block, _ := pem.Decode(certData)
 	if block == nil {
-		return fmt.Errorf("failed to decode PEM block")
+		return errors.New("failed to decode PEM block")
 	}
 
 	cert, err := x509.ParseCertificate(block.Bytes)
@@ -168,7 +169,7 @@ func verifyCertificate(certPath string) error {
 	// Verify the certificate's validity period
 	now := time.Now()
 	if now.Before(cert.NotBefore) || now.After(cert.NotAfter) {
-		return fmt.Errorf("certificate is not valid at the current time")
+		return errors.New("certificate is not valid at the current time")
 	}
 
 	return nil

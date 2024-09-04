@@ -7,6 +7,7 @@ import "user.proto";
 import "category.proto";
 import "task.proto";
 import "public.proto";
+import "verify_email.proto";
 
 option go_package = "go-todolist-grpc/api/pb";
 
@@ -92,6 +93,13 @@ service ToDoList {
         option (google.api.http) = {
             post: "/v1/task/delete"
             body: "*"
+        };
+    }
+
+    // Verify email
+    rpc VerifyEmail(VerifyEmailRequest) returns (Response) {
+        option (google.api.http) = {
+            get: "/v1/user/verify_email"
         };
     }
 }

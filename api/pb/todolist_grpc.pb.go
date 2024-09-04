@@ -32,6 +32,7 @@ const (
 	ToDoList_ListTask_FullMethodName       = "/pb.ToDoList/ListTask"
 	ToDoList_UpdateTask_FullMethodName     = "/pb.ToDoList/UpdateTask"
 	ToDoList_DeleteTask_FullMethodName     = "/pb.ToDoList/DeleteTask"
+	ToDoList_VerifyEmail_FullMethodName    = "/pb.ToDoList/VerifyEmail"
 )
 
 // ToDoListClient is the client API for ToDoList service.
@@ -54,6 +55,8 @@ type ToDoListClient interface {
 	ListTask(ctx context.Context, in *ListTaskRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	UpdateTask(ctx context.Context, in *UpdateTaskRequest, opts ...grpc.CallOption) (*Response, error)
 	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*Response, error)
+	// Verify email
+	VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type toDoListClient struct {
@@ -194,6 +197,16 @@ func (c *toDoListClient) DeleteTask(ctx context.Context, in *DeleteTaskRequest, 
 	return out, nil
 }
 
+func (c *toDoListClient) VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, ToDoList_VerifyEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ToDoListServer is the server API for ToDoList service.
 // All implementations must embed UnimplementedToDoListServer
 // for forward compatibility
@@ -214,6 +227,8 @@ type ToDoListServer interface {
 	ListTask(context.Context, *ListTaskRequest) (*ListResponse, error)
 	UpdateTask(context.Context, *UpdateTaskRequest) (*Response, error)
 	DeleteTask(context.Context, *DeleteTaskRequest) (*Response, error)
+	// Verify email
+	VerifyEmail(context.Context, *VerifyEmailRequest) (*Response, error)
 	mustEmbedUnimplementedToDoListServer()
 }
 
@@ -259,6 +274,9 @@ func (UnimplementedToDoListServer) UpdateTask(context.Context, *UpdateTaskReques
 }
 func (UnimplementedToDoListServer) DeleteTask(context.Context, *DeleteTaskRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTask not implemented")
+}
+func (UnimplementedToDoListServer) VerifyEmail(context.Context, *VerifyEmailRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmail not implemented")
 }
 func (UnimplementedToDoListServer) mustEmbedUnimplementedToDoListServer() {}
 
@@ -507,6 +525,24 @@ func _ToDoList_DeleteTask_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ToDoList_VerifyEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoListServer).VerifyEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToDoList_VerifyEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoListServer).VerifyEmail(ctx, req.(*VerifyEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ToDoList_ServiceDesc is the grpc.ServiceDesc for ToDoList service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -565,6 +601,10 @@ var ToDoList_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteTask",
 			Handler:    _ToDoList_DeleteTask_Handler,
+		},
+		{
+			MethodName: "VerifyEmail",
+			Handler:    _ToDoList_VerifyEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -24,6 +24,8 @@ type Config struct {
 	DBMaxConnection            *int   `mapstructure:"DB_MAX_CONN"`
 	DBMaxIdle                  *int   `mapstructure:"DB_MAX_IDLE"`
 
+	RedisPort string `mapstructure:"REDIS_PORT"`
+
 	BcryptCost   int    `mapstructure:"BCRYPT_COST"`
 	JwtSecretKey string `mapstructure:"JWT_SECRET_KEY"`
 	JwtTtl       int    `mapstructure:"JWT_TTL"`
@@ -32,6 +34,11 @@ type Config struct {
 	LogFolderPath       string `mapstructure:"LOG_FOLDER_PATH"`
 	EnableConsoleOutput bool   `mapstructure:"ENABLE_CONSOLE_OUTPUT"`
 	EnableFileOutput    bool   `mapstructure:"ENABLE_FILE_OUTPUT"`
+
+	AWSAccessKeyId     string `mapstructure:"AWS_ACCESS_KEY_ID"`
+	AWSSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	EmailSenderName    string `mapstructure:"EMAIL_SENDER_NAME"`
+	EmailSenderAddress string `mapstructure:"EMAIL_SENDER_ADDRESS"`
 }
 
 func Load() error {

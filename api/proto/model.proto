@@ -34,3 +34,15 @@ message Task {
     string created_at = 11;
     string updated_at = 12;
 }
+
+message VerifyEmail {
+    int32 id = 1;
+    int32 user_id = 2;
+    string username = 3;
+    string email = 4;
+    string secret_code = 5;
+    bool is_used = 6;
+    string expired_at = 7;
+    string created_at = 8;
+    string updated_at = 9;
+}

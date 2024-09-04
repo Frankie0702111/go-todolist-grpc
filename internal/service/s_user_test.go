@@ -3,24 +3,33 @@ package service_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"go-todolist-grpc/api/pb"
 	"go-todolist-grpc/internal/config"
 	"go-todolist-grpc/internal/pkg/db"
 	"go-todolist-grpc/internal/pkg/log"
 	"go-todolist-grpc/internal/pkg/util"
 	"go-todolist-grpc/internal/service"
+	"go-todolist-grpc/internal/service/queue"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
 
+	"github.com/hibiken/asynq"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func setUpUser() error {
+type mockTaskDistributorByUser struct{}
+
+func (m *mockTaskDistributorByUser) DistributeTaskSendVerifyEmail(ctx context.Context, payload *queue.PayloadSendVerifyEmail, opts ...asynq.Option) error {
+	return nil
+}
+
+func setUpUser() (*service.Server, error) {
 	var mockConfigContent bytes.Buffer
 	mockConfigContent.WriteString("HTTP_SERVER_PORT=" + config.HttpPort + "\n")
 	mockConfigContent.WriteString("GRPC_SERVER_PORT=" + config.GrpcPort + "\n")
@@ -47,13 +56,13 @@ func setUpUser() error {
 	err := os.WriteFile(mockConfigFile, mockConfigContent.Bytes(), 0644)
 	defer os.Remove(mockConfigFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Init config
 	loadErr := config.Load()
 	if loadErr != nil {
-		return loadErr
+		return nil, loadErr
 	}
 
 	// Init log
@@ -71,17 +80,18 @@ func setUpUser() error {
 
 	err = db.Init(opt)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	mockDistributor := &mockTaskDistributorByUser{}
+	s := service.NewServer(mockDistributor)
+
+	return s, nil
 }
 
 func TestRegisterUser(t *testing.T) {
-	err := setUpUser()
+	s, err := setUpUser()
 	assert.NoError(t, err)
-
-	s := service.Server{}
 	email := util.RandomEmail()
 
 	t.Run("Success", func(t *testing.T) {
@@ -169,21 +179,27 @@ func TestRegisterUser(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	err := setUpUser()
+	s, err := setUpUser()
 	assert.NoError(t, err)
 
 	// Insert a test user
-	s := service.Server{}
 	email := util.RandomEmail()
 	password := util.RandomString(8)
+	isEmailVerified := true
 	rReq := &pb.RegisterUserRequest{
 		Email:    email,
 		Username: util.RandomString(6),
 		Password: password,
 	}
-
-	_, rErr := s.RegisterUser(context.Background(), rReq)
+	rRes, rErr := s.RegisterUser(context.Background(), rReq)
 	assert.Nil(t, rErr)
+
+	uReq := &pb.UpdateUserRequest{
+		UserId:          rRes.GetUser().Id,
+		IsEmailVerified: &isEmailVerified,
+	}
+	_, uErr := s.UpdateUser(context.Background(), uReq)
+	assert.Nil(t, uErr)
 
 	t.Run("Success", func(t *testing.T) {
 		lReq := &pb.LoginRequest{
@@ -192,6 +208,7 @@ func TestLogin(t *testing.T) {
 		}
 
 		res, err := s.Login(context.Background(), lReq)
+		fmt.Printf("Error : %v\n", err)
 		assert.Nil(t, err)
 		assert.NotNil(t, res)
 		assert.Equal(t, int32(http.StatusOK), res.Status)
@@ -233,11 +250,10 @@ func TestLogin(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	err := setUpUser()
+	s, err := setUpUser()
 	assert.NoError(t, err)
 
 	// Insert a test user
-	s := service.Server{}
 	rReq := &pb.RegisterUserRequest{
 		Email:    util.RandomEmail(),
 		Username: util.RandomString(6),

@@ -295,7 +295,7 @@ func TestVerifyCertificate(t *testing.T) {
 		assert.NoError(t, err)
 
 		// Certificate issuer should match
-		assert.Equal(t, "CN=Amazon RDS Root 2019 CA,OU=Amazon RDS,O=Amazon Web Services\\, Inc.,L=Seattle,ST=Washington,C=US", cert.Issuer.String())
+		assert.Equal(t, "CN=Amazon RDS af-south-1 Root CA,OU=Amazon RDS,O=Amazon Web Services\\, Inc.,L=Seattle,ST=Washington,C=US", cert.Issuer.String())
 
 		// Certificate should be valid
 		now := time.Now()
